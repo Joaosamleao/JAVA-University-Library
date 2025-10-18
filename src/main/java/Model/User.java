@@ -4,7 +4,7 @@ import Model.Enum.UserType;
 
 public class User {
     
-    private long idUser;
+    private int idUser;
 
     private String name;
     private String registration;
@@ -20,13 +20,14 @@ public class User {
     }
 
     // Getters
-    public long getIdUser() { return idUser; }
+    public int getIdUser() { return idUser; }
     public String getName() { return name; }
     public String registration() { return registration; }
     public String email() { return email; }
     public UserType returnUserType() { return userType; }
 
     // Setters
+    public void setIdUser(int idUser) { this.idUser = idUser; } 
     public void setName(String name) { this.name = name; }
     public void setRegistration(String registration) { this.registration = registration; }
     public void setEmail(String email) { this.email = email; }

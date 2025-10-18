@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Loan {
     
-    private Long idLoan;
+    private int idLoan;
 
     private User user;
     private Book book;
@@ -24,7 +24,7 @@ public class Loan {
     }
 
     // Getters
-    public Long getIdLoan() { return idLoan; }
+    public int getIdLoan() { return idLoan; }
     public User getrUser() { return user; }
     public Book getBook() { return book; }
     public LocalDate getLoanDate() { return loanDate; }
@@ -32,6 +32,7 @@ public class Loan {
     public LocalDate getActualReturnDate() { return actualReturnDate; }
 
     // Setters
+    public void setidLoan(int idLoan) { this.idLoan = idLoan; }
     public void setActualReturnDate(LocalDate actualReturnDate) { this.actualReturnDate = actualReturnDate; }
 
 }
