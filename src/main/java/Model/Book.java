@@ -2,7 +2,7 @@ package Model;
 
 public class Book {
     
-    private int idBook;
+    private Integer idBook;
 
     private String title;
     private String author;
@@ -11,6 +11,10 @@ public class Book {
     private String isbn;
 
     private boolean available;
+
+    public Book() {
+
+    }
 
     public Book(String title, String author, int publishedYear, String category, String isbn) {
         this.title = title;
@@ -21,7 +25,7 @@ public class Book {
     }
 
     // Getters
-    public int getIdBook() { return idBook; }
+    public Integer getIdBook() { return idBook; }
     public String getTitle() { return title; }
     public String getAuthor() { return author; }
     public int getPublishedYear() { return publishedYear; }
@@ -30,7 +34,7 @@ public class Book {
     public boolean getAvailable() { return available; }
 
     // Setters
-    public void setIdBook(int idBook) { this.idBook = idBook; }
+    public void setIdBook(Integer idBook) { this.idBook = idBook; }
     public void setTitle(String title) { this.title = title; }
     public void setAuthor(String author) { this.author = author; }
     public void setPublishedYear(int publishedYear) { this.publishedYear = publishedYear; }

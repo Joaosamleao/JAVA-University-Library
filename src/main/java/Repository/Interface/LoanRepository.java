@@ -1,5 +1,7 @@
 package Repository.Interface;
 
-public interface LoanRepository {
+import Model.Loan;
+
+public interface LoanRepository extends GenericRepository<Loan, Integer> {
     
 }

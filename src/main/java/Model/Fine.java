@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 public class Fine {
     
-    private int idFine;
-    private Loan loan;
-    private double amount;
-    private LocalDate issueDate;
+    private Integer idFine;
+    private final Loan loan;
+    private final double amount;
+    private final LocalDate issueDate;
 
     public Fine(Loan loan, double amount) {
         this.loan = loan;
@@ -16,12 +16,12 @@ public class Fine {
     }
 
     //Getters
-    public int getIdFine() { return idFine; }
+    public Integer getIdFine() { return idFine; }
     public Loan getLoan() { return loan; }
     public double getAmount() { return amount; }
     public LocalDate getIssueDate() { return issueDate; }
 
     //Setters
-    public void setIdFine(int idFine) { this.idFine = idFine; }
+    public void setIdFine(Integer idFine) { this.idFine = idFine; }
 
 }

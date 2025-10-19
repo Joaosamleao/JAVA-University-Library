@@ -1,5 +1,7 @@
 package Repository.Interface;
 
-public interface UserRepository {
+import Model.User;
+
+public interface UserRepository extends GenericRepository<User, Integer> {
     
 }
