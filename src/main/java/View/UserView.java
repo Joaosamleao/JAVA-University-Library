@@ -1,5 +1,7 @@
 package View;
 
-public class UserView {
+import javax.swing.JFrame;
+
+public class UserView extends JFrame {
     
 }

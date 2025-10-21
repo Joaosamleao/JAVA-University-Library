@@ -1,5 +1,7 @@
 package View;
 
-public class BookCopyView {
+import javax.swing.JFrame;
+
+public class BookCopyView extends JFrame {
     
 }

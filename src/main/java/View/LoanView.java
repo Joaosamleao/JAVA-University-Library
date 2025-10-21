@@ -1,5 +1,7 @@
 package View;
 
-public class LoanView {
+import javax.swing.JFrame;
+
+public class LoanView extends JFrame {
     
 }

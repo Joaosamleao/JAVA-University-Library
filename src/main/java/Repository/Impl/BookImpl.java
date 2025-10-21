@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import Model.Book;
+import Repository.Exceptions.DataAccessException;
 import Repository.Interface.BookRepository;
 public class BookImpl implements BookRepository {
     
@@ -43,7 +44,7 @@ public class BookImpl implements BookRepository {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't create book: " + book.getTitle(), e);
         }
         return book;
     }
@@ -59,7 +60,7 @@ public class BookImpl implements BookRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't find book by ID: " + id, e);
         }
         return Optional.empty();
     }
@@ -75,7 +76,7 @@ public class BookImpl implements BookRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't find book by ISBN: " + isbn, e);
         }
         return Optional.empty();
     }
@@ -92,7 +93,7 @@ public class BookImpl implements BookRepository {
                 books.add(mapResultSetToBook(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't find any books", e);
         }
         return books;
     }
@@ -108,7 +109,7 @@ public class BookImpl implements BookRepository {
             ps.setString(5, book.getIsbn());
             ps.setInt(6, book.getIdBook());
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't update book info", e);
         }
     }
 
@@ -119,7 +120,7 @@ public class BookImpl implements BookRepository {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't delete book", e);
         }
     }
 

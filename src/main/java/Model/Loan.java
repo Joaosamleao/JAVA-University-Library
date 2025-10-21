@@ -6,17 +6,14 @@ public class Loan {
     
     private Integer idLoan;
 
-    private User user;
-    private Book book;
+    private final User user;
+    private final Book book;
     
-    private LocalDate loanDate;
-    private LocalDate expectedReturnDate;
+    private final LocalDate loanDate;
+    private final LocalDate expectedReturnDate;
     private LocalDate actualReturnDate;
     
     public Loan(User user, Book book) {
-        if (user == null || book == null) {
-            throw new IllegalArgumentException("User or Book cannot be null!");
-        }
         this.user = user;
         this.book = book;
         this.loanDate = LocalDate.now();

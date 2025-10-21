@@ -1,5 +1,8 @@
 package View;
 
-public class BookView {
+import javax.swing.JFrame;
+
+public class BookView extends JFrame {
     
+
 }

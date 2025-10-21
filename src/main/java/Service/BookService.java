@@ -1,9 +1,12 @@
 package Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import Model.Book;
+import Repository.Exceptions.DataAccessException;
 import Repository.Interface.BookRepository;
+import Service.Exceptions.ResourceNotFoundException;
 
 // Regras de Negócio sobre a entidade Book (Livro)
 
@@ -15,38 +18,50 @@ import Repository.Interface.BookRepository;
 // Operações remetente ao usuário do tipo Student (Estudante):
 // Visualizar o acervo de livros
 
-// TO-DO 18/10/2025
-// Create Book
-// Read Book
+// TO-DO 20/10/2025
+// Create Book ✅
+// Read Book ✅
 // Update Book
-// Delete Book
+// Delete Book ✅
+
+// TO-DO 21/10/2025
+// Update Book
 
 public class BookService {
 
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
     
-    public BookService() {
-
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
     }
 
-    public Book createBook(String title, String author, int publishedYear, String category, String isbn) {
-        return null;
+    public Book createBook(String title, String author, int publishedYear, String category, String isbn) throws DataAccessException {
+        Book book = new Book(title, author, publishedYear, category, isbn);
+        bookRepository.create(book);
+        return book;
     }
 
-    public Book findBookById(Long id) {
-        return null;
+    public Book findBookById(Integer id) throws DataAccessException, ResourceNotFoundException {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        return optionalBook.orElseThrow(() -> new ResourceNotFoundException("ERROR: Book not found with ID: " + id));
     }
 
-    public List<Book> readAllBooks() {
-        return null;
+    public Book findBookByIsbn(String isbn) throws DataAccessException, ResourceNotFoundException {
+        Optional<Book> optionalBook = bookRepository.findByIsbn(isbn);
+        return optionalBook.orElseThrow(() -> new ResourceNotFoundException("ERROR: Book not found with ISBN: " + isbn));
     }
 
-    public void updateBook() {
-
+    public List<Book> readAllBooks() throws DataAccessException {
+        List<Book> allBooks = bookRepository.findAll();
+        return allBooks;
     }
 
-    public void deleteBook() {
+    public void updateBook(Book book) {
+        // TO-DO
+    }
 
+    public void deleteBook(Book book) throws DataAccessException {
+        bookRepository.delete(book.getIdBook());
     }
 
 }

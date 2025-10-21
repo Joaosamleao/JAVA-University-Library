@@ -37,7 +37,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <!-- IMPORTANTE: Mude "com.biblioteca.app.Main" para o caminho completo da sua classe principal. -->
-                                    <mainClass>com.biblioteca.app.Main</mainClass>
+                                    <mainClass>App.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
