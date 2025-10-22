@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import Exceptions.DataAccessException;
+import Exceptions.DataCreationException;
 import Model.Book;
-import Repository.Exceptions.DataAccessException;
 import Repository.Interface.BookRepository;
 public class BookImpl implements BookRepository {
     
@@ -21,7 +22,7 @@ public class BookImpl implements BookRepository {
     }
 
     @Override
-    public Book create(Book book) {
+    public Book create(Book book) throws DataCreationException {
         String sql = "INSERT INTO books (title, author, publication_year, category, isbn) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, book.getTitle());
@@ -44,7 +45,7 @@ public class BookImpl implements BookRepository {
             }
 
         } catch (SQLException e) {
-            throw new DataAccessException("ERROR: Couldn't create book: " + book.getTitle(), e);
+            throw new DataCreationException("ERROR: Couldn't create book: " + book.getTitle(), e);
         }
         return book;
     }
@@ -109,7 +110,7 @@ public class BookImpl implements BookRepository {
             ps.setString(5, book.getIsbn());
             ps.setInt(6, book.getIdBook());
         } catch (SQLException e) {
-            throw new DataAccessException("ERROR: Couldn't update book info", e);
+            throw new DataAccessException("ERROR: Couldn't update book with ID: " + book.getIdBook() + ", no affected rows", e);
         }
     }
 
@@ -120,7 +121,7 @@ public class BookImpl implements BookRepository {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new DataAccessException("ERROR: Couldn't delete book", e);
+            throw new DataAccessException("ERROR: Couldn't delete book with ID: " + id + ", no affected rows", e);
         }
     }
 

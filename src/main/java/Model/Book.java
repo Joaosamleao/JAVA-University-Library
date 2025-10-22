@@ -10,8 +10,6 @@ public class Book {
     private String category;
     private String isbn;
 
-    private boolean available;
-
     public Book() {
 
     }
@@ -31,7 +29,6 @@ public class Book {
     public int getPublishedYear() { return publishedYear; }
     public String getCategory() { return category; }
     public String getIsbn() { return isbn; }
-    public boolean getAvailable() { return available; }
 
     // Setters
     public void setIdBook(Integer idBook) { this.idBook = idBook; }
@@ -40,6 +37,5 @@ public class Book {
     public void setPublishedYear(int publishedYear) { this.publishedYear = publishedYear; }
     public void setCategory(String category) { this.category = category; }
     public void setIsbn(String isbn) { this.isbn = isbn; }
-    public void setAvailable(boolean available) { this.available = available; }
 
 }

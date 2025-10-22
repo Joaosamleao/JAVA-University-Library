@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import Exceptions.DataAccessException;
+import Exceptions.DataCreationException;
 import Model.Book;
 import Model.BookCopy;
 import Model.Enum.ItemStatus;
@@ -26,7 +28,7 @@ public class BookCopyImpl implements BookCopyRepository {
     }
 
     @Override
-    public BookCopy create(BookCopy bookCopy) {
+    public BookCopy create(BookCopy bookCopy) throws DataCreationException {
         String sql = "INSERT INTO copies (id_book, barcode, status, location_code) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, bookCopy.getBook().getIdBook());
@@ -42,13 +44,13 @@ public class BookCopyImpl implements BookCopyRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataCreationException("ERROR: Book copy could not be created, no affected rows", e);
         }
         return bookCopy;
     }
 
     @Override
-    public Optional<BookCopy> findById(Integer id) {
+    public Optional<BookCopy> findById(Integer id) throws DataAccessException {
         String sql = "SELECT * FROM copies WHERE id_copy = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -58,13 +60,13 @@ public class BookCopyImpl implements BookCopyRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't find book copy with ID: " + id, e);
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<BookCopy> findByBarCode(String barcode) {
+    public Optional<BookCopy> findByBarCode(String barcode) throws DataAccessException {
         String sql = "SELECT * FROM copies WHERE barcode = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, barcode);
@@ -74,13 +76,13 @@ public class BookCopyImpl implements BookCopyRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Could find book copy with barcode: " + barcode, e);
         }
         return Optional.empty();
     }
 
     @Override
-    public List<BookCopy> findAll() {
+    public List<BookCopy> findAll() throws DataAccessException {
         List<BookCopy> copies = new ArrayList<>();
         String sql = "SELECT * FROM copies";
         try {
@@ -90,7 +92,7 @@ public class BookCopyImpl implements BookCopyRepository {
                 copies.add(mapResultSetBookCopy(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't find any book copies", e);
         }
         return copies;
     }
@@ -101,7 +103,7 @@ public class BookCopyImpl implements BookCopyRepository {
     }
 
     @Override
-    public void update(BookCopy bookCopy) {
+    public void update(BookCopy bookCopy) throws DataAccessException {
         String sql = "UPDATE copies SET id_book = ?, barcode = ?, status = ?, location_code = ?, WHERE id_copy = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, bookCopy.getBook().getIdBook());
@@ -110,18 +112,18 @@ public class BookCopyImpl implements BookCopyRepository {
             ps.setString(4, bookCopy.getLocationCode());
             ps.setInt(5, bookCopy.getIdCopy());
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't update copy with ID: " + bookCopy.getIdCopy() + ", no affected rows", e);
         }
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id) throws DataAccessException {
         String sql = "DELETE FROM copies WHERE id_copy = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); // Temporário
+            throw new DataAccessException("ERROR: Couldn't delete copy with ID: " + id + ", no affected rows", e);
         }
     }
 

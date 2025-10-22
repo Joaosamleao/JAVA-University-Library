@@ -1,4 +1,4 @@
-package Service.Exceptions;
+package Exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {
