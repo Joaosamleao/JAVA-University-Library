@@ -34,13 +34,13 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public Book createBook(String title, String author, int publishedYear, String category, String isbn) throws DataAccessException, BusinessRuleException {
-        Optional<Book> bookWithSameIsbn = bookRepository.findByIsbn(isbn);
-        if (bookWithSameIsbn.isPresent() && !bookWithSameIsbn.get().getIsbn().equals(isbn)) {
+    public Book createBook(BookDTO bookData) throws DataAccessException, BusinessRuleException {
+        Optional<Book> bookWithSameIsbn = bookRepository.findByIsbn(bookData.getIsbn());
+        if (bookWithSameIsbn.isPresent() && !bookWithSameIsbn.get().getIsbn().equals(bookData.getIsbn())) {
             throw new BusinessRuleException("ERROR: ISBN code must be unique");
         }
 
-        Book book = new Book(title, author, publishedYear, category, isbn);
+        Book book = new Book(bookData.getTitle(), bookData.getAuthor(), bookData.getPublishedYear(), bookData.getCategory(), bookData.getIsbn());
         bookRepository.create(book);
 
         return book;

@@ -1,11 +1,13 @@
 package View.Panels.BookPanels;
 
+import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -59,9 +61,13 @@ public class BookListPanel extends JPanel {
                 }
             }
         });
+
+        loadButton = new JButton("Reload Collection");
+        loadButton.addActionListener(e -> loadBooks());
+        add(loadButton, BorderLayout.SOUTH);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
-    // Define que a tela será rolável
-    //JScrollPane scrollPane = new JScrollPane(table);
-    
 }

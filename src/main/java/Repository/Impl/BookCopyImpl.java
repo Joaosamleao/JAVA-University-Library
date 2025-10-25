@@ -115,13 +115,12 @@ public class BookCopyImpl implements BookCopyRepository {
 
     @Override
     public void update(BookCopy bookCopy) throws DataAccessException {
-        String sql = "UPDATE copies SET id_book = ?, barcode = ?, status = ?, location_code = ?, WHERE id_copy = ?";
+        String sql = "UPDATE copies SET barcode = ?, status = ?, location_code = ?, WHERE id_copy = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, bookCopy.getBookId());
-            ps.setString(2, bookCopy.getBarcode());
-            ps.setString(3, bookCopy.getStatus().name());
-            ps.setString(4, bookCopy.getLocationCode());
-            ps.setInt(5, bookCopy.getIdCopy());
+            ps.setString(1, bookCopy.getBarcode());
+            ps.setString(2, bookCopy.getStatus().name());
+            ps.setString(3, bookCopy.getLocationCode());
+            ps.setInt(4, bookCopy.getIdCopy());
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't update copy with ID: " + bookCopy.getIdCopy() + ", no affected rows", e);
         }

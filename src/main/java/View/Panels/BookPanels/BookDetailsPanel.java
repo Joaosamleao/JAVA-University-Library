@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -21,6 +23,7 @@ import DTO.BookDTO;
 import Model.Enum.UserType;
 import Model.User;
 import View.Panels.BookCopyPanels.BookCopyCreateDialog;
+import View.Panels.BookCopyPanels.BookCopyEditDialog;
 
 public class BookDetailsPanel extends JPanel {
     
@@ -73,6 +76,19 @@ public class BookDetailsPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(copiesTable);
         add(scrollPane, BorderLayout.CENTER);
 
+        copiesTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (user.getUserType() == UserType.LIBRARIAN || e.getClickCount() == 2) {
+                    int selectedRow = copiesTable.getSelectedRow();
+                    if (selectedRow != -1) {
+                        Integer copyId = (Integer) copiesTableModel.getValueAt(selectedRow, 0);
+                        openEditCopyDialog(copyId);
+                    }
+                }
+            }
+        });
+
         JPanel buttonPanel = new JPanel(new FlowLayout());
         editButton = new JButton("Edit Book");
         addCopyButton = new JButton("Add Copy");
@@ -84,7 +100,7 @@ public class BookDetailsPanel extends JPanel {
 
             editButton.addActionListener(e -> {
                 if (currentBookId != null) {
-                    bookController.requestBookEditView(currentBookId);
+                    openEditBookDialog();
                 }
             });
 
@@ -137,6 +153,28 @@ public class BookDetailsPanel extends JPanel {
         if (createDialog.isSaved()) {
             loadCopiesForCurrentBook();
             JOptionPane.showMessageDialog(this, "Succesfully added new copy", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void openEditBookDialog() {
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        BookEditDialog editDialog = new BookEditDialog(parentFrame, true, currentBookId, bookController);
+
+        editDialog.setVisible(true);
+        if (editDialog.isSaved()) {
+            loadBookDetails(currentBookId);
+            JOptionPane.showMessageDialog(this, "Succesfully updated book info", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void openEditCopyDialog(Integer copyId) {
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        BookCopyEditDialog editDialog = new BookCopyEditDialog(parentFrame, true, copyId, copyController);
+
+        editDialog.setVisible(true);
+        if (editDialog.isSaved()) {
+            loadCopiesForCurrentBook();
+            JOptionPane.showMessageDialog(this, "Succesfully updated copy info", "Success", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

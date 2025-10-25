@@ -17,10 +17,9 @@ import Controller.LoanController;
 import Controller.UserController;
 import Model.Enum.UserType;
 import Model.User;
-import View.Panels.BookCopyPanels.BookCopyEditPanel;
 import View.Panels.BookPanels.BookCreatePanel;
 import View.Panels.BookPanels.BookDetailsPanel;
-import View.Panels.BookPanels.BookEditPanel;
+import View.Panels.BookPanels.BookEditDialog;
 import View.Panels.BookPanels.BookListPanel;
 import View.Panels.LoanPanels.ActiveLoansPanel;
 import View.Panels.LoanPanels.LoanCreatePanel;
@@ -66,14 +65,14 @@ public class MainAppFrame extends JFrame {
         BookDetailsPanel bookDetailsPanel = new BookDetailsPanel(bookController, copyController, loggedUser);
         mainPanel.add(bookDetailsPanel, "BOOK_DETAILS");
 
-        BookEditPanel bookUpdatePanel = new BookEditPanel(bookController);
-        mainPanel.add(bookUpdatePanel, "BOOK_EDIT");
+        //BookEditDialog bookUpdatePanel = new BookEditDialog(bookController);
+        //mainPanel.add(bookUpdatePanel, "BOOK_EDIT");
 
         //BookCopyCreateDialog bookCopyCreatePanel = new BookCopyCreateDialog(copyController);
         //mainPanel.add(bookCopyCreatePanel, "BOOK_COPY_CREATE");
 
-        BookCopyEditPanel bookCopyEditPanel = new BookCopyEditPanel(copyController);
-        mainPanel.add(bookCopyEditPanel, "BOOK_COPY_EDIT");
+        //BookCopyEditPanel bookCopyEditPanel = new BookCopyEditPanel(copyController);
+        //mainPanel.add(bookCopyEditPanel, "BOOK_COPY_EDIT");
 
         ActiveLoansPanel activeLoansPanel = new ActiveLoansPanel(loanController);
         mainPanel.add(activeLoansPanel, "ACTIVE_LOANS");
@@ -145,8 +144,8 @@ public class MainAppFrame extends JFrame {
         Component panel = findPanelByName(panelName);
 
         if (panel instanceof BookDetailsPanel && id != null) {
-            ((BookDetailsPanel) panel).loadBookDetails(id); // (TO-DO)
-        } else if (panel instanceof BookEditPanel && id != null) {
+            //((BookDetailsPanel) panel).loadBookDetails(id); // (TO-DO)
+        } else if (panel instanceof BookEditDialog && id != null) {
             //((BookEditPanel) panel).loadBookDetails(id); // (TO-DO)
         }
         // Lógica para outras telas que precisem ser carregadas

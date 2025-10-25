@@ -3,6 +3,8 @@ package Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import DTO.CopyDTO;
+import Exceptions.DataAccessException;
 import Model.BookCopy;
 import Service.BookCopyService;
 import View.MainAppFrame;
@@ -10,11 +12,11 @@ import View.MainAppFrame;
 public class BookCopyController {
     
     private final BookCopyService service;
-    private final MainAppFrame mainFrame;
+    //private final MainAppFrame mainFrame;
 
     public BookCopyController(BookCopyService service, MainAppFrame mainFrame) {
         this.service = service;
-        this.mainFrame = mainFrame;
+        //this.mainFrame = mainFrame;
     }
 
     public void createCopyRequest(Integer bookId, String barcode, String locationCode) {
@@ -36,10 +38,20 @@ public class BookCopyController {
                 dataForView.add(rowData);
             }
             return dataForView;
-        } catch (Exception e) {
-            // Substituir
+        } catch (DataAccessException e) {
+           System.out.print("Teste"); // Substituir 
         }
         return null;
+    }
+
+    public void requestCopyEdit(Integer copyId, CopyDTO copyData) {
+        service.updateCopy(copyId, copyData);
+    }
+
+    public CopyDTO requestCopyById(Integer copyId) {
+        BookCopy copy = service.findCopyById(copyId);
+        CopyDTO copyDTO = new CopyDTO(copy.getBarcode(), copy.getLocationCode());
+        return copyDTO;
     }
 
 }

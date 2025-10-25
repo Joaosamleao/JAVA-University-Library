@@ -14,14 +14,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Controller.BookCopyController;
+import DTO.CopyDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
 
-public class BookCopyCreateDialog extends JDialog {
+public class BookCopyEditDialog extends JDialog {
     
+    private final Integer copyId;
     private final BookCopyController copyController;
-    private final Integer bookId;
 
     private JTextField barcodeField;
     private JTextField locationCodeField;
@@ -30,16 +31,16 @@ public class BookCopyCreateDialog extends JDialog {
 
     private boolean isSaved = false;
 
-
-    public BookCopyCreateDialog(Frame parent, boolean modal, Integer bookId, BookCopyController copyController) {
+    public BookCopyEditDialog(Frame parent, boolean modal, Integer copyId, BookCopyController copyController) {
         super(parent, modal);
-        this.bookId = bookId;
+        this.copyId = copyId;
         this.copyController = copyController;
         initComponents();
+        fillExistingData();
     }
 
     private void initComponents() {
-        setTitle("Add New Copy");
+        setTitle("Update Copy Info");
         setSize(350, 200);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(getParent());
@@ -77,6 +78,12 @@ public class BookCopyCreateDialog extends JDialog {
         pack();
     }
 
+    private void fillExistingData() {
+        CopyDTO existingData = copyController.requestCopyById(copyId);
+        barcodeField.setText(existingData.getBarcode());
+        locationCodeField.setText(existingData.getLocationCode());
+    }
+
     private void onSave() {
 
         String barcode = barcodeField.getText().trim();
@@ -88,11 +95,11 @@ public class BookCopyCreateDialog extends JDialog {
         }
 
         try {
-            copyController.createCopyRequest(bookId, barcode, locationCode);
+            CopyDTO copyData = new CopyDTO(barcode, locationCode);
+            copyController.requestCopyEdit(copyId, copyData);
             this.isSaved = true;
-            this.dispose();
         } catch (DataCreationException | BusinessRuleException e) {
-            JOptionPane.showMessageDialog(this, "WARNING: Couldn't save copy: " + e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "WARNING: Couldn't update copy info: " + e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
             this.isSaved = false;
         } catch (DataAccessException e) {
             JOptionPane.showMessageDialog(this, "UNEXPECTED ERROR: Couldn't save to database", "Fatal Error", JOptionPane.ERROR_MESSAGE);

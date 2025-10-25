@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.BookDTO;
+import Exceptions.DataAccessException;
 import Model.Book;
 import Service.BookService;
 import View.MainAppFrame;
@@ -16,6 +17,10 @@ public class BookController {
     public BookController(BookService service, MainAppFrame mainFrame) {
         this.service = service;
         this.mainFrame = mainFrame;
+    }
+
+    public void createBookRequest(BookDTO bookData) {
+        service.createBook(bookData);
     }
 
     public List<Object[]> loadBooksRequest() {
@@ -36,7 +41,7 @@ public class BookController {
             }
             return dataForView;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             System.out.print("Teste"); // Substituir
         }
         return null;
@@ -48,10 +53,8 @@ public class BookController {
         }
     }
 
-    public void requestBookEditView(Integer bookId) {
-        if (mainFrame != null) {
-            mainFrame.switchToView("BOOK_EDIT", bookId);
-        }
+    public void requestBookEdit(Integer bookId, BookDTO bookData) {
+        service.updateBook(bookId, bookData);
     }
 
     public BookDTO requestBookById(Integer bookId) {

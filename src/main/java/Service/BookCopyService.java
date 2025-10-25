@@ -58,6 +58,11 @@ public class BookCopyService {
         return copyRepository.findByBook(id);
     }
 
+    public BookCopy findCopyById(Integer id) throws DataAccessException {
+        Optional<BookCopy> optionalCopy = copyRepository.findById(id);
+        return optionalCopy.orElseThrow(() -> new ResourceNotFoundException("ERROR: Couldn't find copy with id: " + id));
+    }
+
     public void updateCopy(Integer id, CopyDTO copyData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
         BookCopy existingCopy = copyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ERROR: Copy not found with ID: " + id + ", couldn't update data"));
         Optional<BookCopy> bookWithSameBarcode = copyRepository.findByBarCode(copyData.getBarcode());
