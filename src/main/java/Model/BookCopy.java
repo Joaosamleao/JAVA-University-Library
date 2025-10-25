@@ -6,7 +6,7 @@ public class BookCopy {
     
     private Integer idCopy;
 
-    private Book book;
+    private Integer id;
     private String barcode;
     private ItemStatus status;
     private String locationCode;
@@ -15,23 +15,23 @@ public class BookCopy {
 
     }
 
-    public BookCopy(Book book, String barcode, ItemStatus status, String locationCode) {
-        this.book = book;
+    public BookCopy(Integer id, String barcode, String locationCode) {
+        this.id = id;
         this.barcode = barcode;
-        this.status = status;
+        this.status = ItemStatus.AVAILABLE;
         this.locationCode = locationCode;
     }
 
     //Getters
     public Integer getIdCopy() { return idCopy; }
-    public Book getBook() { return book; }
+    public Integer getBookId() { return id; }
     public String getBarcode() { return barcode; }
     public ItemStatus getStatus() { return status; }
     public String getLocationCode() { return locationCode; }
 
     //Setters
     public void setIdCopy(Integer idCopy) { this.idCopy = idCopy; }
-    public void setBook(Book book) { this.book = book; }
+    public void setBookId(Integer id) { this.id = id; }
     public void setStatus(ItemStatus status) { this.status = status; }
     public void setBarcode(String barcode) { this.barcode = barcode; }
     public void setLocationCode(String locationCode) { this.locationCode = locationCode; }

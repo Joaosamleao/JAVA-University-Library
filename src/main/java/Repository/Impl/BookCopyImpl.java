@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
-import Model.Book;
 import Model.BookCopy;
 import Model.Enum.ItemStatus;
 import Repository.Interface.BookCopyRepository;
@@ -20,18 +19,18 @@ import Repository.Interface.BookRepository;
 public class BookCopyImpl implements BookCopyRepository {
     
     private final Connection connection;
-    private final BookRepository bookRepository;
+    //private final BookRepository bookRepository;
 
     public BookCopyImpl(Connection connection, BookRepository bookRepository) {
         this.connection = connection;
-        this.bookRepository = bookRepository;
+        //this.bookRepository = bookRepository;
     }
 
     @Override
     public BookCopy create(BookCopy bookCopy) throws DataCreationException {
         String sql = "INSERT INTO copies (id_book, barcode, status, location_code) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, bookCopy.getBook().getIdBook());
+            ps.setInt(1, bookCopy.getBookId());
             ps.setString(2, bookCopy.getBarcode());
             ps.setString(3, bookCopy.getStatus().name());
             ps.setString(4, bookCopy.getLocationCode());
@@ -98,6 +97,18 @@ public class BookCopyImpl implements BookCopyRepository {
     }
 
     @Override
+    public List<BookCopy> findByBook(Integer id) throws DataAccessException {
+        List<BookCopy> copies = new ArrayList<>();
+        String sql = "SEELCT * FROM copies WHERE id_book = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+        } catch (SQLException e) {
+            throw new DataAccessException("ERROR: Couldn't find copies for book with ID: " + id, e);
+        }
+        return copies;
+    }
+
+    @Override
     public List<BookCopy> findByStatus(ItemStatus status) {
         return null;
     }
@@ -106,7 +117,7 @@ public class BookCopyImpl implements BookCopyRepository {
     public void update(BookCopy bookCopy) throws DataAccessException {
         String sql = "UPDATE copies SET id_book = ?, barcode = ?, status = ?, location_code = ?, WHERE id_copy = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, bookCopy.getBook().getIdBook());
+            ps.setInt(1, bookCopy.getBookId());
             ps.setString(2, bookCopy.getBarcode());
             ps.setString(3, bookCopy.getStatus().name());
             ps.setString(4, bookCopy.getLocationCode());
@@ -135,8 +146,8 @@ public class BookCopyImpl implements BookCopyRepository {
         copy.setLocationCode(rs.getString("location_code"));
 
         int bookId = rs.getInt("id_book");
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new SQLException("ERROR: Failed to find Book with ID: " + bookId));
-        copy.setBook(book);
+        //Book book = bookRepository.findById(bookId).orElseThrow(() -> new SQLException("ERROR: Failed to find Book with ID: " + bookId));
+        copy.setBookId(bookId);
         return copy;
     }
 

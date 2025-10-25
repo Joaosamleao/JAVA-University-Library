@@ -3,7 +3,7 @@ package Service;
 import java.util.List;
 import java.util.Optional;
 
-import DTO.BookUpdateDTO;
+import DTO.BookDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.ResourceNotFoundException;
@@ -60,7 +60,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public void updateBook(Integer id, BookUpdateDTO bookData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
+    public void updateBook(Integer id, BookDTO bookData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
         Book existingBook = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ERROR: Book not found with ID: " + id + ", couldn't update data"));
         Optional<Book> bookWithSameIsbn = bookRepository.findByIsbn(bookData.getIsbn());
 

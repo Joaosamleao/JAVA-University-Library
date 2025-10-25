@@ -12,4 +12,6 @@ public interface BookCopyRepository extends GenericRepository<BookCopy, Integer>
 
     List<BookCopy> findByStatus(ItemStatus status);
 
+    List<BookCopy> findByBook(Integer id);
+
 }

@@ -22,9 +22,9 @@ public class User {
     // Getters
     public Integer getIdUser() { return idUser; }
     public String getName() { return name; }
-    public String registration() { return registration; }
-    public String email() { return email; }
-    public UserType returnUserType() { return userType; }
+    public String getRegistration() { return registration; }
+    public String getEmail() { return email; }
+    public UserType getUserType() { return userType; }
 
     // Setters
     public void setIdUser(Integer idUser) { this.idUser = idUser; } 

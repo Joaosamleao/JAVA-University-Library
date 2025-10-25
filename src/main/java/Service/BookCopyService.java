@@ -3,12 +3,11 @@ package Service;
 import java.util.List;
 import java.util.Optional;
 
-import DTO.CopyUpdateDTO;
+import DTO.CopyDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
 import Exceptions.ResourceNotFoundException;
-import Model.Book;
 import Model.BookCopy;
 import Model.Enum.ItemStatus;
 import Repository.Interface.BookCopyRepository;
@@ -34,13 +33,13 @@ public class BookCopyService {
         this.copyRepository = copyRepository;
     }
 
-    public BookCopy createCopy(Book book, String barcode, ItemStatus status, String locationCode) throws DataCreationException, BusinessRuleException {
+    public BookCopy createCopy(Integer id, String barcode, String locationCode) throws DataCreationException, BusinessRuleException {
         Optional<BookCopy> bookWithSameBarcode = copyRepository.findByBarCode(barcode);
         if (bookWithSameBarcode.isPresent()) {
             throw new BusinessRuleException("ERROR: Barcodes must be unique");
         }
 
-        BookCopy copy = new BookCopy(book, barcode, status, locationCode);
+        BookCopy copy = new BookCopy(id, barcode, locationCode);
         copyRepository.create(copy);
 
         return copy;
@@ -55,7 +54,11 @@ public class BookCopyService {
         return copyRepository.findAll();
     }
 
-    public void updateCopy(Integer id, CopyUpdateDTO copyData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
+    public List<BookCopy> findCopiesByBook(Integer id) throws DataAccessException {
+        return copyRepository.findByBook(id);
+    }
+
+    public void updateCopy(Integer id, CopyDTO copyData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
         BookCopy existingCopy = copyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ERROR: Copy not found with ID: " + id + ", couldn't update data"));
         Optional<BookCopy> bookWithSameBarcode = copyRepository.findByBarCode(copyData.getBarcode());
 

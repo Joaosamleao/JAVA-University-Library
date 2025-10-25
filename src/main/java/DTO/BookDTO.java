@@ -1,6 +1,6 @@
 package DTO;
 
-public class BookUpdateDTO {
+public class BookDTO {
     
     private final String title;
     private final String author;
@@ -8,7 +8,7 @@ public class BookUpdateDTO {
     private final String category;
     private final String isbn;
 
-    public BookUpdateDTO(String title, String author, int publishedYear, String category, String isbn) {
+    public BookDTO(String title, String author, int publishedYear, String category, String isbn) {
         this.title = title;
         this.author = author;
         this.publishedYear = publishedYear;

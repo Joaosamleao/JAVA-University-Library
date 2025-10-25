@@ -3,14 +3,14 @@ package DTO;
 import Model.Book;
 import Model.Enum.ItemStatus;
 
-public class CopyUpdateDTO {
+public class CopyDTO {
     
     private final Book book;
     private final String barcode;
     private final ItemStatus status;
     private final String locationCode;
 
-    public CopyUpdateDTO(Book book, String barcode, ItemStatus status, String locationCode) {
+    public CopyDTO(Book book, String barcode, ItemStatus status, String locationCode) {
         this.book = book;
         this.barcode = barcode;
         this.status = status;
