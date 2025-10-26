@@ -1,10 +1,8 @@
-package Model;
+package DTO;
 
 import java.time.LocalDate;
 
-public class Loan {
-    
-    private Integer idLoan;
+public class LoanDTO {
 
     private Integer userId;
     private Integer copyId;
@@ -12,12 +10,8 @@ public class Loan {
     private LocalDate loanDate;
     private LocalDate expectedReturnDate;
     private LocalDate actualReturnDate;
-    
-    public Loan() {
-        
-    }
 
-    public Loan(Integer userId, Integer copyId) {
+    public LoanDTO(Integer userId, Integer copyId) {
         this.userId = userId;
         this.copyId = copyId;
         this.loanDate = LocalDate.now();
@@ -25,7 +19,6 @@ public class Loan {
     }
 
     // Getters
-    public Integer getIdLoan() { return idLoan; }
     public Integer getUserId() { return userId; }
     public Integer getCopyId() { return copyId; }
     public LocalDate getLoanDate() { return loanDate; }
@@ -33,7 +26,6 @@ public class Loan {
     public LocalDate getActualReturnDate() { return actualReturnDate; }
 
     // Setters
-    public void setidLoan(Integer idLoan) { this.idLoan = idLoan; }
     public void setUserId(Integer userId) { this.userId = userId; }
     public void setCopyId(Integer copyId) { this.copyId = copyId; }
     public void setLoanDate(LocalDate loanDate) { this.loanDate = loanDate; }

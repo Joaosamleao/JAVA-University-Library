@@ -51,7 +51,7 @@ public class BookImpl implements BookRepository {
     }
 
     @Override
-    public Optional<Book> findById(Integer id) {
+    public Optional<Book> findById(Integer id) throws DataAccessException {
         String sql = "SELECT * FROM books WHERE id_book = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -67,7 +67,7 @@ public class BookImpl implements BookRepository {
     }
 
     @Override
-    public Optional<Book> findByIsbn(String isbn) {
+    public Optional<Book> findByIsbn(String isbn) throws DataAccessException {
         String sql = "SELECT * FROM books WHERE isbn = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, isbn);
@@ -83,7 +83,7 @@ public class BookImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> findAll() {
+    public List<Book> findAll() throws DataAccessException {
         List<Book> books = new ArrayList<>();
         String sql = "SELECT * FROM books ORDER BY title";
         try {
@@ -100,7 +100,7 @@ public class BookImpl implements BookRepository {
     }
 
     @Override
-    public void update(Book book) {
+    public void update(Book book) throws DataAccessException {
         String sql = "UPDATE books SET title = ?, author = ?, publication_year = ?, category = ?, isbn = ? WHERE id_book = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, book.getTitle());
@@ -115,7 +115,7 @@ public class BookImpl implements BookRepository {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer id) throws DataAccessException {
         String sql = "DELETE FROM books WHERE id_book = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);

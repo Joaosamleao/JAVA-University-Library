@@ -19,7 +19,6 @@ import Model.Enum.UserType;
 import Model.User;
 import View.Panels.BookPanels.BookCreatePanel;
 import View.Panels.BookPanels.BookDetailsPanel;
-import View.Panels.BookPanels.BookEditDialog;
 import View.Panels.BookPanels.BookListPanel;
 import View.Panels.LoanPanels.ActiveLoansPanel;
 import View.Panels.LoanPanels.LoanCreatePanel;
@@ -34,7 +33,7 @@ public class MainAppFrame extends JFrame {
     private final BookController bookController;
     private final BookCopyController copyController;
     private final LoanController loanController;
-    private final UserController userController;
+    //private final UserController userController;
 
     private final User loggedUser;
 
@@ -43,7 +42,7 @@ public class MainAppFrame extends JFrame {
         this.bookController = bookController;
         this.copyController = copyController;
         this.loanController = loanController;
-        this.userController = userController;
+        //this.userController = userController;
         initComponents();
     }
 
@@ -144,9 +143,7 @@ public class MainAppFrame extends JFrame {
         Component panel = findPanelByName(panelName);
 
         if (panel instanceof BookDetailsPanel && id != null) {
-            //((BookDetailsPanel) panel).loadBookDetails(id); // (TO-DO)
-        } else if (panel instanceof BookEditDialog && id != null) {
-            //((BookEditPanel) panel).loadBookDetails(id); // (TO-DO)
+            ((BookDetailsPanel) panel).loadBookDetails(id);
         }
         // Lógica para outras telas que precisem ser carregadas
         cardLayout.show(mainPanel, panelName);

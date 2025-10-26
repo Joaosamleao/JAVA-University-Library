@@ -14,14 +14,13 @@ import Exceptions.DataCreationException;
 import Model.BookCopy;
 import Model.Enum.ItemStatus;
 import Repository.Interface.BookCopyRepository;
-import Repository.Interface.BookRepository;
 
 public class BookCopyImpl implements BookCopyRepository {
     
     private final Connection connection;
     //private final BookRepository bookRepository;
 
-    public BookCopyImpl(Connection connection, BookRepository bookRepository) {
+    public BookCopyImpl(Connection connection) {
         this.connection = connection;
         //this.bookRepository = bookRepository;
     }
@@ -75,7 +74,7 @@ public class BookCopyImpl implements BookCopyRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("ERROR: Could find book copy with barcode: " + barcode, e);
+            throw new DataAccessException("ERROR: Couldn't find book copy with barcode: " + barcode, e);
         }
         return Optional.empty();
     }
