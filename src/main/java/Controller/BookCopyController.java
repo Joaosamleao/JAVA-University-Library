@@ -54,4 +54,11 @@ public class BookCopyController {
         return copyDTO;
     }
 
+    public CopyDTO requestCopyByBarcode(String barcode) {
+        BookCopy copy = service.copyByBarcode(barcode);
+        CopyDTO copyDTO = new CopyDTO();
+        copyDTO.setCopyId(copy.getIdCopy());
+        return copyDTO;
+    }
+
 }

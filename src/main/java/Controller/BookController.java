@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.BookDTO;
+import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
+import Exceptions.ResourceNotFoundException;
 import Model.Book;
 import Service.BookService;
 import View.MainAppFrame;
@@ -54,7 +56,16 @@ public class BookController {
     }
 
     public void requestBookEdit(Integer bookId, BookDTO bookData) {
-        service.updateBook(bookId, bookData);
+        try {
+            service.updateBook(bookId, bookData);
+        } catch (ResourceNotFoundException e) {
+
+        } catch (BusinessRuleException e) {
+
+        } catch (DataAccessException e) {
+            
+        }
+
     }
 
     public BookDTO requestBookById(Integer bookId) {

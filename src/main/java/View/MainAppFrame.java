@@ -33,7 +33,7 @@ public class MainAppFrame extends JFrame {
     private final BookController bookController;
     private final BookCopyController copyController;
     private final LoanController loanController;
-    //private final UserController userController;
+    private final UserController userController;
 
     private final User loggedUser;
 
@@ -42,7 +42,7 @@ public class MainAppFrame extends JFrame {
         this.bookController = bookController;
         this.copyController = copyController;
         this.loanController = loanController;
-        //this.userController = userController;
+        this.userController = userController;
         initComponents();
     }
 
@@ -79,10 +79,10 @@ public class MainAppFrame extends JFrame {
         LoanDetailsPanel loanDetailsPanel = new LoanDetailsPanel(loanController);
         mainPanel.add(loanDetailsPanel, "LOAN_DETAILS");
 
-        MyLoansPanel myLoansPanel = new MyLoansPanel(loanController);
+        MyLoansPanel myLoansPanel = new MyLoansPanel(loanController, loggedUser);
         mainPanel.add(myLoansPanel, "MY_LOANS");
 
-        LoanCreatePanel loanCreatePanel = new LoanCreatePanel(loanController);
+        LoanCreatePanel loanCreatePanel = new LoanCreatePanel(loanController, userController, copyController);
         mainPanel.add(loanCreatePanel, "REGISTER_LOAN");
 
         // Lógica para os Panels do grupo FinePanels
@@ -161,14 +161,14 @@ public class MainAppFrame extends JFrame {
 
     // Métodos para exibição de mensagens
     public void showSuccessMessage(String message) {
-        JOptionPane.showMessageDialog(null, message, "Operation Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Operation Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void showErrorMessage(String message) {
-        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public void showWarningMessage(String message) {
-        JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);   
+        JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);   
     }
 }

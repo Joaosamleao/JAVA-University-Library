@@ -1,9 +1,9 @@
-package Model;
+package DTO;
 
 import Model.Enum.UserType;
 
-public class User {
-    
+public class UserDTO {
+
     private Integer idUser;
 
     private String name;
@@ -13,11 +13,11 @@ public class User {
     
     private UserType userType;
 
-    public User() {
-        
+    public UserDTO() {
+
     }
 
-    public User(String name, String registration, String email, String password,UserType userType) {
+    public UserDTO(String name, String registration, String email, String password,UserType userType) {
         this.name = name;
         this.registration = registration;
         this.email = email;
@@ -38,7 +38,5 @@ public class User {
     public void setName(String name) { this.name = name; }
     public void setRegistration(String registration) { this.registration = registration; }
     public void setEmail(String email) { this.email = email; }
-    public void setUserType(UserType usertype) { this.userType = usertype; }
-    public void setPassword(String password) { this.password = password; }
 
 }

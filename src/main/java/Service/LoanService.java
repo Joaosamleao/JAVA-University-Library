@@ -6,6 +6,7 @@ import java.util.Optional;
 import DTO.LoanDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
+import Exceptions.DataCreationException;
 import Exceptions.ResourceNotFoundException;
 import Model.Loan;
 import Repository.Interface.LoanRepository;
@@ -29,7 +30,7 @@ public class LoanService {
         this.loanRepository = loanRepository;
     }
 
-    public Loan createLoan(LoanDTO loanData) throws DataAccessException, BusinessRuleException {
+    public Loan createLoan(Loan loanData) throws DataCreationException, BusinessRuleException {
         Optional<Loan> loanWithSameCopy = loanRepository.findLoanByCopyId(loanData.getCopyId());
         if (loanWithSameCopy.isPresent() && !loanWithSameCopy.get().getCopyId().equals((loanData.getCopyId()))) {
             throw new BusinessRuleException("ERROR: Copy is already borrowed");
@@ -50,9 +51,8 @@ public class LoanService {
         return loanRepository.findAll();
     }
 
-    public Loan findLoanByUserId(Integer id) throws DataAccessException, ResourceNotFoundException {
-        Optional<Loan> optionalLoan = loanRepository.findLoanByUserId(id);
-        return optionalLoan.orElseThrow(() -> new ResourceNotFoundException("ERROR: Loan not found with User ID: " + id));
+    public List<Loan> findLoanByUserId(Integer id) throws DataAccessException, ResourceNotFoundException {
+        return loanRepository.findLoanByUserId(id);
     }
 
     public void updateLoan(Integer id, LoanDTO loanData) throws DataAccessException, ResourceNotFoundException {

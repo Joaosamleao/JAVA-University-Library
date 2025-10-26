@@ -67,19 +67,20 @@ public class LoanImpl implements LoanRepository {
     }
 
     @Override
-    public Optional<Loan> findLoanByUserId(Integer id) throws DataAccessException {
+    public List<Loan> findLoanByUserId(Integer id) throws DataAccessException {
+        List<Loan> loans = new ArrayList<>();
         String sql = "SEELCT * FROM loans WHERE id_user = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapResultSetToLoan(rs));
+                while (rs.next()) {
+                    loans.add(mapResultSetToLoan(rs));
                 }
             }
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't find loans with user ID: " + id, e);
         }
-        return Optional.empty();
+        return loans;
     }
 
     @Override
@@ -116,9 +117,10 @@ public class LoanImpl implements LoanRepository {
 
     @Override
     public void update(Loan loan) throws DataAccessException {
-        String sql = "UPDATE loans SET actual_return_date = ?";
+        String sql = "UPDATE loans SET actual_return_date = ? WHERE id_loan = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setDate(1, java.sql.Date.valueOf(loan.getActualReturnDate()));
+            ps.setInt(2, loan.getIdLoan());
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't update loan with ID: " + loan.getIdLoan(), e);
         }

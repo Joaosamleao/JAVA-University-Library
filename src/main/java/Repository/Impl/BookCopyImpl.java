@@ -114,7 +114,7 @@ public class BookCopyImpl implements BookCopyRepository {
 
     @Override
     public void update(BookCopy bookCopy) throws DataAccessException {
-        String sql = "UPDATE copies SET barcode = ?, status = ?, location_code = ?, WHERE id_copy = ?";
+        String sql = "UPDATE copies SET barcode = ?, status = ?, location_code = ? WHERE id_copy = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, bookCopy.getBarcode());
             ps.setString(2, bookCopy.getStatus().name());

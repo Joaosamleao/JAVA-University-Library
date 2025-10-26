@@ -45,28 +45,28 @@ public class BookCreatePanel extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
-        add(new JLabel("Cadastro de Novo Livro"), gbc);
+        add(new JLabel("Register a New Book"), gbc);
         gbc.gridwidth = 1; gbc.anchor = GridBagConstraints.WEST;
 
-        gbc.gridx = 0; gbc.gridy = 1; add(new JLabel("Título:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 1; add(new JLabel("Title:"), gbc);
         gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 1.0;
         titleField = new JTextField(30); add(titleField, gbc);
         gbc.weightx = 0.0;
 
-        gbc.gridx = 0; gbc.gridy = 2; add(new JLabel("Autor:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 2; add(new JLabel("Author:"), gbc);
         gbc.gridx = 1; gbc.gridy = 2; authorField = new JTextField(30); add(authorField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3; add(new JLabel("Ano:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 3; add(new JLabel("Year:"), gbc);
         gbc.gridx = 1; gbc.gridy = 3; publishedYearField = new JTextField(4); add(publishedYearField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4; add(new JLabel("Categoria:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 4; add(new JLabel("Category:"), gbc);
         gbc.gridx = 1; gbc.gridy = 4; categoryField = new JTextField(30); add(categoryField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 5; add(new JLabel("ISBN:"), gbc);
         gbc.gridx = 1; gbc.gridy = 5; isbnField = new JTextField(30); add(isbnField, gbc);
 
-        saveButton = new JButton("Salvar Livro");
-        cancelButton = new JButton("Limpar");
+        saveButton = new JButton("Save Book");
+        cancelButton = new JButton("Clear");
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         buttonPanel.add(saveButton);
