@@ -14,9 +14,6 @@ import javax.swing.JTextField;
 
 import Controller.BookController;
 import DTO.BookDTO;
-import Exceptions.BusinessRuleException;
-import Exceptions.DataAccessException;
-import Exceptions.DataCreationException;
 
 public class BookCreatePanel extends JPanel {
 
@@ -109,16 +106,7 @@ public class BookCreatePanel extends JPanel {
         }
 
         BookDTO bookDTO = new BookDTO(title, author, publishedYearInt, category, isbn);
-    
-        try {
-            bookController.createBookRequest(bookDTO);
-            onCancel();
-        } catch (DataCreationException | BusinessRuleException e) {
-            JOptionPane.showMessageDialog(this, "WARNING: Couldn't save book: " + e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
-        } catch (DataAccessException e) {
-            JOptionPane.showMessageDialog(this, "UNEXPECTED ERROR: Couldn't save to database", "Fatal Error", JOptionPane.ERROR_MESSAGE);
-        }
-
+        bookController.createBookRequest(bookDTO);
     }
 
     private void onCancel() {

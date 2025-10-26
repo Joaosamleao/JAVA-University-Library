@@ -16,9 +16,6 @@ import javax.swing.JTextField;
 
 import Controller.BookController;
 import DTO.BookDTO;
-import Exceptions.BusinessRuleException;
-import Exceptions.DataAccessException;
-import Exceptions.ResourceNotFoundException;
 
 public class BookEditDialog extends JDialog {
     
@@ -107,7 +104,6 @@ public class BookEditDialog extends JDialog {
     }
 
     private void onSave() {
-
         String title = titleField.getText().trim();
         String author = authorField.getText().trim();
         String publishedYear = publishedYearField.getText().trim();
@@ -122,19 +118,10 @@ public class BookEditDialog extends JDialog {
 
         int publishedYearInt = Integer.parseInt(publishedYear);
 
-        try {
-            BookDTO bookData = new BookDTO(title, author, publishedYearInt, category, isbn);
-            bookController.requestBookEdit(bookId, bookData);
-            this.isSaved = true;
-            this.dispose();
-        } catch (BusinessRuleException | ResourceNotFoundException e) {
-            JOptionPane.showMessageDialog(this, "WARNING: Couldn't update book info: " + e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
-            this.isSaved = false;
-        } catch (DataAccessException e) {
-            JOptionPane.showMessageDialog(this, "UNEXPECTED ERROR: Couldn't save to database: " + e.getMessage(), "Fatal Error", JOptionPane.ERROR_MESSAGE);
-            this.isSaved = false;
-        }
-
+        BookDTO bookData = new BookDTO(title, author, publishedYearInt, category, isbn);
+        bookController.requestBookEdit(bookId, bookData);
+        this.isSaved = true;
+        this.dispose();
     }
 
     private void onCancel() {

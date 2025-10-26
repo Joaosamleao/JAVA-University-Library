@@ -6,6 +6,7 @@ import java.util.List;
 import DTO.BookDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
+import Exceptions.DataCreationException;
 import Exceptions.ResourceNotFoundException;
 import Model.Book;
 import Service.BookService;
@@ -22,7 +23,13 @@ public class BookController {
     }
 
     public void createBookRequest(BookDTO bookData) {
-        service.createBook(bookData);
+        try {
+            service.createBook(bookData);
+        } catch (DataCreationException | BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: Couldn't create book: " + e.getMessage());
+        } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNPEXCTED ERROR: Couldn't save to database: " + e.getMessage());
+        }
     }
 
     public List<Object[]> loadBooksRequest() {
@@ -58,12 +65,10 @@ public class BookController {
     public void requestBookEdit(Integer bookId, BookDTO bookData) {
         try {
             service.updateBook(bookId, bookData);
-        } catch (ResourceNotFoundException e) {
-
-        } catch (BusinessRuleException e) {
-
+        } catch (ResourceNotFoundException | BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: Couldn't update book info: " + e.getMessage());
         } catch (DataAccessException e) {
-            
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database: " + e.getMessage());
         }
 
     }

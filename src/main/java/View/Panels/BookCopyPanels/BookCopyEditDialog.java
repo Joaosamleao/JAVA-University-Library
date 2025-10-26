@@ -15,9 +15,6 @@ import javax.swing.JTextField;
 
 import Controller.BookCopyController;
 import DTO.CopyDTO;
-import Exceptions.BusinessRuleException;
-import Exceptions.DataAccessException;
-import Exceptions.DataCreationException;
 
 public class BookCopyEditDialog extends JDialog {
     
@@ -85,7 +82,6 @@ public class BookCopyEditDialog extends JDialog {
     }
 
     private void onSave() {
-
         String barcode = barcodeField.getText().trim();
         String locationCode = locationCodeField.getText().trim();
 
@@ -94,18 +90,9 @@ public class BookCopyEditDialog extends JDialog {
             return;
         }
 
-        try {
-            CopyDTO copyData = new CopyDTO(barcode, locationCode);
-            copyController.requestCopyEdit(copyId, copyData);
-            this.isSaved = true;
-        } catch (DataCreationException | BusinessRuleException e) {
-            JOptionPane.showMessageDialog(this, "WARNING: Couldn't update copy info: " + e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
-            this.isSaved = false;
-        } catch (DataAccessException e) {
-            JOptionPane.showMessageDialog(this, "UNEXPECTED ERROR: Couldn't save to database", "Fatal Error", JOptionPane.ERROR_MESSAGE);
-            this.isSaved = false;
-        }
-
+        CopyDTO copyData = new CopyDTO(barcode, locationCode);
+        copyController.requestCopyEdit(copyId, copyData);
+        this.isSaved = true;
     }
 
     private void onCancel() {

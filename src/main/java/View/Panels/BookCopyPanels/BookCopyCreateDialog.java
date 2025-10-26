@@ -14,9 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Controller.BookCopyController;
-import Exceptions.BusinessRuleException;
-import Exceptions.DataAccessException;
-import Exceptions.DataCreationException;
 
 public class BookCopyCreateDialog extends JDialog {
     
@@ -87,18 +84,9 @@ public class BookCopyCreateDialog extends JDialog {
             return;
         }
 
-        try {
-            copyController.createCopyRequest(bookId, barcode, locationCode);
-            this.isSaved = true;
-            this.dispose();
-        } catch (DataCreationException | BusinessRuleException e) {
-            JOptionPane.showMessageDialog(this, "WARNING: Couldn't save copy: " + e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
-            this.isSaved = false;
-        } catch (DataAccessException e) {
-            JOptionPane.showMessageDialog(this, "UNEXPECTED ERROR: Couldn't save to database", "Fatal Error", JOptionPane.ERROR_MESSAGE);
-            this.isSaved = false;
-        }
-
+        copyController.createCopyRequest(bookId, barcode, locationCode);
+        this.isSaved = true;
+        this.dispose();
     }
 
     private void onCancel() {

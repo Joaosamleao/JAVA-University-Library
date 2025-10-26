@@ -12,27 +12,28 @@ import Model.Loan;
 import Service.BookCopyService;
 import Service.LoanService;
 import Service.UserService;
+import View.MainAppFrame;
 
 public class LoanController {
     
     private final LoanService loanService;
     private final UserService userService;
     private final BookCopyService copyService;
+    private final MainAppFrame mainFrame;
 
-    public LoanController(LoanService loanService, UserService userService, BookCopyService copyService) {
+    public LoanController(LoanService loanService, UserService userService, BookCopyService copyService, MainAppFrame mainFrame) {
         this.loanService = loanService;
         this.userService = userService;
         this.copyService = copyService;
+        this.mainFrame = mainFrame;
     }
 
     public void createLoanRequest(LoanDTO loanData) {
         try {
             Loan loan = new Loan(loanData.getUserId(), loanData.getCopyId());
             loanService.createLoan(loan);
-        } catch (BusinessRuleException e) {
-
-        } catch (DataCreationException e) {
-
+        } catch (DataCreationException | BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: Couldn't create loan: " + e.getMessage());
         }
     }
 
@@ -52,6 +53,7 @@ public class LoanController {
             }
             return dataForView;
         } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database: " + e.getMessage());
         }
         return null;
     }
@@ -72,9 +74,9 @@ public class LoanController {
             }
             return dataForView;
         } catch (ResourceNotFoundException e) {
-
+            mainFrame.showWarningMessage("WARNING: No users found: " + e.getMessage());
         } catch (DataAccessException e) {
-
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database: " + e.getMessage());
         }
         return null;
     }

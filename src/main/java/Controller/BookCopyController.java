@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.CopyDTO;
+import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
+import Exceptions.DataCreationException;
+import Exceptions.ResourceNotFoundException;
 import Model.BookCopy;
 import Service.BookCopyService;
 import View.MainAppFrame;
@@ -12,15 +15,21 @@ import View.MainAppFrame;
 public class BookCopyController {
     
     private final BookCopyService service;
-    //private final MainAppFrame mainFrame;
+    private final MainAppFrame mainFrame;
 
     public BookCopyController(BookCopyService service, MainAppFrame mainFrame) {
         this.service = service;
-        //this.mainFrame = mainFrame;
+        this.mainFrame = mainFrame;
     }
 
     public void createCopyRequest(Integer bookId, String barcode, String locationCode) {
-        service.createCopy(bookId, barcode, locationCode);
+        try {
+            service.createCopy(bookId, barcode, locationCode);
+        } catch (DataCreationException | BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: Couldn't save copy: " + e.getMessage());
+        } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database");
+        }
     }
 
     public List<Object[]> loadCopiesRequest(Integer id) {
@@ -45,7 +54,13 @@ public class BookCopyController {
     }
 
     public void requestCopyEdit(Integer copyId, CopyDTO copyData) {
-        service.updateCopy(copyId, copyData);
+        try {
+            service.updateCopy(copyId, copyData);
+        } catch (ResourceNotFoundException | BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: Couldn't update copy info: " + e.getMessage());
+        } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database: " + e.getMessage());
+        }
     }
 
     public CopyDTO requestCopyById(Integer copyId) {
