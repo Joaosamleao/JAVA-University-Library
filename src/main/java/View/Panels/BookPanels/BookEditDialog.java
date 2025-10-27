@@ -119,6 +119,7 @@ public class BookEditDialog extends JDialog {
         int publishedYearInt = Integer.parseInt(publishedYear);
 
         BookDTO bookData = new BookDTO(title, author, publishedYearInt, category, isbn);
+        System.out.print("New Book Data Title: " + bookData.getTitle());
         bookController.requestBookEdit(bookId, bookData);
         this.isSaved = true;
         this.dispose();

@@ -101,6 +101,8 @@ public class BookImpl implements BookRepository {
 
     @Override
     public void update(Book book) throws DataAccessException {
+        System.out.println("Novo titulo na camada Repository: " + book.getTitle());
+        System.out.println("ID do Livro (Edição) na camada Repository" + book.getIdBook());
         String sql = "UPDATE books SET title = ?, author = ?, publication_year = ?, category = ?, isbn = ? WHERE id_book = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, book.getTitle());
@@ -109,6 +111,12 @@ public class BookImpl implements BookRepository {
             ps.setString(4, book.getCategory());
             ps.setString(5, book.getIsbn());
             ps.setInt(6, book.getIdBook());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("ERROR: Couldn't update book, no affected rows");
+            }
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't update book with ID: " + book.getIdBook() + ", no affected rows", e);
         }

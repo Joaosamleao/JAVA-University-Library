@@ -31,9 +31,9 @@ public class LoanService {
     }
 
     public Loan createLoan(Loan loanData) throws DataCreationException, BusinessRuleException {
-        Optional<Loan> loanWithSameCopy = loanRepository.findLoanByCopyId(loanData.getCopyId());
-        if (loanWithSameCopy.isPresent() && !loanWithSameCopy.get().getCopyId().equals((loanData.getCopyId()))) {
-            throw new BusinessRuleException("ERROR: Copy is already borrowed");
+        Optional<Loan> existingActiveLoan = loanRepository.findActiveLoanByCopyId(loanData.getCopyId());
+        if (existingActiveLoan.isPresent()) {
+            throw new BusinessRuleException("Copy is not available for loans");
         }
 
         Loan loan = new Loan(loanData.getUserId(), loanData.getCopyId());
@@ -55,7 +55,10 @@ public class LoanService {
         return loanRepository.findLoanByUserId(id);
     }
 
-    public void updateLoan(Integer id, LoanDTO loanData) throws DataAccessException, ResourceNotFoundException {
+    public void updateLoan(Integer id, LoanDTO loanData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
+        if (loanData.getActualReturnDate().isBefore(loanData.getLoanDate())) {
+            throw new BusinessRuleException("WARNING: Invalid value for return date");
+        }
         Loan existingLoan = loanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(("ERROR: Loan not found with ID: " + id)));
 
         existingLoan.setActualReturnDate(loanData.getActualReturnDate());

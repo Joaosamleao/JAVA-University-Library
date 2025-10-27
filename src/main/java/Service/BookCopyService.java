@@ -55,6 +55,7 @@ public class BookCopyService {
     }
 
     public List<BookCopy> findCopiesByBook(Integer id) throws DataAccessException {
+        System.out.print("Find copies foi chamado com ID: " + id);
         return copyRepository.findByBook(id);
     }
 

@@ -11,4 +11,6 @@ public interface LoanRepository extends GenericRepository<Loan, Integer> {
 
     Optional<Loan> findLoanByCopyId(Integer id);
 
+    Optional<Loan> findActiveLoanByCopyId(Integer id);
+
 }

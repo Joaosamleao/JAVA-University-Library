@@ -4,9 +4,11 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.stream.Stream;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -75,6 +77,13 @@ public class LoanCreatePanel extends JPanel {
     private void onSave() {
         Integer userId = userController.findUserByRegistration(userRegistrationField.getText().trim()).getIdUser();
         Integer copyId = copyController.requestCopyByBarcode(copyBarcodeField.getText().trim()).getCopyId();
+
+        boolean hasEmptyOrNull = Stream.of(userId, copyId).anyMatch(s -> s == null);
+        if (hasEmptyOrNull) {
+            JOptionPane.showMessageDialog(this, "WARNING: All fields are mandatory", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         LoanDTO loanData = new LoanDTO(userId, copyId);
         loanController.createLoanRequest(loanData);
     }

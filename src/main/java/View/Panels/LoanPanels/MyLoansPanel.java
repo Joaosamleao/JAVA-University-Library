@@ -10,18 +10,18 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import Controller.LoanController;
-import Model.User;
+import DTO.UserDTO;
 
 public class MyLoansPanel extends JPanel {
     
     private final LoanController loanController;
-    private final User user;
+    private final UserDTO user;
 
     private JTable table;
     private DefaultTableModel tableModel;
     private JButton loadButton;
 
-    public MyLoansPanel(LoanController loanController, User user) {
+    public MyLoansPanel(LoanController loanController, UserDTO user) {
         this.loanController = loanController;
         this.user = user;
         initComponents();

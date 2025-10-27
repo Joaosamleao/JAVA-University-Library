@@ -107,6 +107,7 @@ public class BookCreatePanel extends JPanel {
 
         BookDTO bookDTO = new BookDTO(title, author, publishedYearInt, category, isbn);
         bookController.createBookRequest(bookDTO);
+        onCancel();
     }
 
     private void onCancel() {

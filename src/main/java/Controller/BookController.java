@@ -15,11 +15,10 @@ import View.MainAppFrame;
 public class BookController {
     
     private final BookService service;
-    private final MainAppFrame mainFrame;
+    private MainAppFrame mainFrame;
 
-    public BookController(BookService service, MainAppFrame mainFrame) {
+    public BookController(BookService service) {
         this.service = service;
-        this.mainFrame = mainFrame;
     }
 
     public void createBookRequest(BookDTO bookData) {
@@ -57,13 +56,15 @@ public class BookController {
     }
 
     public void requestBookDetailsView(Integer bookId) {
+        System.out.println("Controller Recieved the Request");
         if (mainFrame != null) {
-            mainFrame.switchToView("BOOK_DETAIL", bookId);
+            mainFrame.switchToView("BOOK_DETAILS", bookId);
         }
     }
 
     public void requestBookEdit(Integer bookId, BookDTO bookData) {
         try {
+            System.out.println("Edição de livro chegou no Controller");
             service.updateBook(bookId, bookData);
         } catch (ResourceNotFoundException | BusinessRuleException e) {
             mainFrame.showWarningMessage("WARNING: Couldn't update book info: " + e.getMessage());
@@ -77,6 +78,10 @@ public class BookController {
         Book book = service.findBookById(bookId);
         BookDTO bookDTO = new BookDTO(book.getTitle(), book.getAuthor(), book.getPublishedYear(), book.getCategory(), book.getIsbn());
         return bookDTO;
+    }
+
+    public void setMainFrame(MainAppFrame frame) {
+        this.mainFrame = frame;
     }
 
 }

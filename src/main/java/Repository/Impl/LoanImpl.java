@@ -100,9 +100,25 @@ public class LoanImpl implements LoanRepository {
     }
 
     @Override
+    public Optional<Loan> findActiveLoanByCopyId(Integer id) throws DataAccessException {
+        String sql = "SELECT * FROM loans WHERE id_copy = ? AND actual_return_date IS NULL";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapResultSetToLoan(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("WARNING: Couldn't find active loan with copy ID: " + id, e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public List<Loan> findAll() throws DataAccessException {
         List<Loan> loans = new ArrayList<>();
-        String sql = "SELECT * FROM loans";
+        String sql = "SELECT * FROM loans WHERE actual_return_date IS NULL";
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -121,6 +137,12 @@ public class LoanImpl implements LoanRepository {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setDate(1, java.sql.Date.valueOf(loan.getActualReturnDate()));
             ps.setInt(2, loan.getIdLoan());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("ERROR: Couldn't update book, no affected rows");
+            }
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't update loan with ID: " + loan.getIdLoan(), e);
         }

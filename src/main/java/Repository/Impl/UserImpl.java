@@ -69,7 +69,7 @@ public class UserImpl implements UserRepository {
 
     @Override
     public Optional<User> findUserByRegistration(String registration) throws DataAccessException {
-        String sql = "SEELCT * FROM users WHERE registration = ?";
+        String sql = "SELECT * FROM users WHERE registration = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, registration);
             try (ResultSet rs = ps.executeQuery()) {
@@ -108,6 +108,12 @@ public class UserImpl implements UserRepository {
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPassword());
             ps.setInt(5, user.getIdUser());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("ERROR: Couldn't update book, no affected rows");
+            }
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't update user with ID: " + user.getIdUser(), e);
         }

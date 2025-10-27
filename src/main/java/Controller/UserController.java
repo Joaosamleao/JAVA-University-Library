@@ -10,11 +10,10 @@ import View.MainAppFrame;
 public class UserController {
     
     private final UserService service;
-    private final MainAppFrame mainFrame;
+    private MainAppFrame mainFrame;
     
-    public UserController(UserService service, MainAppFrame mainFrame) {
+    public UserController(UserService service) {
         this.service = service;
-        this.mainFrame = mainFrame;
     }
 
     public UserDTO findUserByRegistration(String registration) {
@@ -26,9 +25,13 @@ public class UserController {
         } catch (ResourceNotFoundException e) {
             mainFrame.showWarningMessage("WARNNIG: No users found with registration: " + registration);
         } catch (DataAccessException e) {
-            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database: " + e.getMessage());
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
         }
         return null;
-    } 
+    }
+
+        public void setMainFrame(MainAppFrame frame) {
+        this.mainFrame = frame;
+    }
 
 }

@@ -93,6 +93,7 @@ public class BookCopyEditDialog extends JDialog {
         CopyDTO copyData = new CopyDTO(barcode, locationCode);
         copyController.requestCopyEdit(copyId, copyData);
         this.isSaved = true;
+        this.dispose();
     }
 
     private void onCancel() {

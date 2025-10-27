@@ -15,11 +15,10 @@ import View.MainAppFrame;
 public class BookCopyController {
     
     private final BookCopyService service;
-    private final MainAppFrame mainFrame;
+    private MainAppFrame mainFrame;
 
-    public BookCopyController(BookCopyService service, MainAppFrame mainFrame) {
+    public BookCopyController(BookCopyService service) {
         this.service = service;
-        this.mainFrame = mainFrame;
     }
 
     public void createCopyRequest(Integer bookId, String barcode, String locationCode) {
@@ -33,6 +32,7 @@ public class BookCopyController {
     }
 
     public List<Object[]> loadCopiesRequest(Integer id) {
+        System.out.println("Load copies recebe a request com ID: " + id);
         try {
             List<BookCopy> copies = service.findCopiesByBook(id);
             List<Object[]> dataForView = new ArrayList<>();
@@ -44,11 +44,14 @@ public class BookCopyController {
                     copy.getStatus(),
                     copy.getLocationCode()
                 };
+                System.out.println("Copy Found: " + java.util.Arrays.toString(rowData));
                 dataForView.add(rowData);
             }
+            System.out.println("Load copies chegou ao fim");
             return dataForView;
         } catch (DataAccessException e) {
-           System.out.print("Teste"); // Substituir 
+            System.out.print("Exception no Load copies");
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access database");
         }
         return null;
     }
@@ -74,6 +77,10 @@ public class BookCopyController {
         CopyDTO copyDTO = new CopyDTO();
         copyDTO.setCopyId(copy.getIdCopy());
         return copyDTO;
+    }
+
+    public void setMainFrame(MainAppFrame frame) {
+        this.mainFrame = frame;
     }
 
 }

@@ -11,6 +11,10 @@ public class LoanDTO {
     private LocalDate expectedReturnDate;
     private LocalDate actualReturnDate;
 
+    public LoanDTO() {
+        
+    }
+
     public LoanDTO(Integer userId, Integer copyId) {
         this.userId = userId;
         this.copyId = copyId;

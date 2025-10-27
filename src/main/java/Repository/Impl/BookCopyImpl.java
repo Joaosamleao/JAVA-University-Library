@@ -98,12 +98,19 @@ public class BookCopyImpl implements BookCopyRepository {
     @Override
     public List<BookCopy> findByBook(Integer id) throws DataAccessException {
         List<BookCopy> copies = new ArrayList<>();
-        String sql = "SEELCT * FROM copies WHERE id_book = ?";
+        String sql = "SELECT * FROM copies WHERE id_book = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    copies.add(mapResultSetBookCopy(rs));
+                }
+            }
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't find copies for book with ID: " + id, e);
         }
+        System.out.println("Copy Repository FindByBook chegou ao fim");
+        System.out.println(copies);
         return copies;
     }
 
@@ -120,6 +127,12 @@ public class BookCopyImpl implements BookCopyRepository {
             ps.setString(2, bookCopy.getStatus().name());
             ps.setString(3, bookCopy.getLocationCode());
             ps.setInt(4, bookCopy.getIdCopy());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("ERROR: Couldn't update book, no affected rows");
+            }
         } catch (SQLException e) {
             throw new DataAccessException("ERROR: Couldn't update copy with ID: " + bookCopy.getIdCopy() + ", no affected rows", e);
         }

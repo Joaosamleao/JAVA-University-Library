@@ -8,6 +8,7 @@ import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
 import Exceptions.ResourceNotFoundException;
+import Model.Enum.ItemStatus;
 import Model.Loan;
 import Service.BookCopyService;
 import Service.LoanService;
@@ -19,21 +20,23 @@ public class LoanController {
     private final LoanService loanService;
     private final UserService userService;
     private final BookCopyService copyService;
-    private final MainAppFrame mainFrame;
+    private MainAppFrame mainFrame;
 
-    public LoanController(LoanService loanService, UserService userService, BookCopyService copyService, MainAppFrame mainFrame) {
+    public LoanController(LoanService loanService, UserService userService, BookCopyService copyService) {
         this.loanService = loanService;
         this.userService = userService;
         this.copyService = copyService;
-        this.mainFrame = mainFrame;
     }
 
     public void createLoanRequest(LoanDTO loanData) {
         try {
             Loan loan = new Loan(loanData.getUserId(), loanData.getCopyId());
             loanService.createLoan(loan);
-        } catch (DataCreationException | BusinessRuleException e) {
-            mainFrame.showWarningMessage("WARNING: Couldn't create loan: " + e.getMessage());
+            copyService.updateCopyStatus(loanData.getCopyId(), ItemStatus.BORROWED);
+        } catch (BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: Copy is already borrowed");
+        } catch (DataCreationException e) {
+            mainFrame.showErrorMessage("ERROR: Couldn't create loan");
         }
     }
 
@@ -44,6 +47,7 @@ public class LoanController {
 
             for (Loan loan : loans) {
                 Object[] rowData = new Object[] {
+                    loan.getIdLoan(),
                     loan.getUserId(),
                     copyService.findCopyById(loan.getCopyId()).getBarcode(),
                     loan.getLoanDate(),
@@ -53,7 +57,7 @@ public class LoanController {
             }
             return dataForView;
         } catch (DataAccessException e) {
-            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database: " + e.getMessage());
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
         }
         return null;
     }
@@ -65,6 +69,7 @@ public class LoanController {
 
             for (Loan loan : loans) {
                 Object[] rowData = new Object[] {
+                    loan.getIdLoan(),
                     userService.findUserById(loan.getUserId()).getRegistration(),
                     copyService.findCopyById(loan.getCopyId()).getBarcode(),
                     loan.getLoanDate(),
@@ -76,9 +81,39 @@ public class LoanController {
         } catch (ResourceNotFoundException e) {
             mainFrame.showWarningMessage("WARNING: No users found: " + e.getMessage());
         } catch (DataAccessException e) {
-            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database: " + e.getMessage());
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
         }
         return null;
+    }
+
+    public void completeLoan(Integer id, LoanDTO loanData) {
+        try {
+            loanService.updateLoan(id, loanData);
+            copyService.updateCopyStatus(loanService.findLoanById(id).getCopyId(), ItemStatus.AVAILABLE);
+        } catch (ResourceNotFoundException e) {
+            mainFrame.showWarningMessage("WARNING: Couldn't find loan with ID: " + id);
+        } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
+        } catch (BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: The return date must not be before the loan");
+        }
+    }
+
+    public LoanDTO findLoanById(Integer id) {
+        try {
+            Loan loan = loanService.findLoanById(id);
+            LoanDTO loanData = new LoanDTO(); loanData.setLoanDate(loan.getLoanDate());
+            return loanData;
+        } catch (ResourceNotFoundException e) {
+            mainFrame.showWarningMessage("WARNING: Couldn't find loan with ID: " + id);
+        } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
+        }
+        return null;
+    }
+
+    public void setMainFrame(MainAppFrame frame) {
+        this.mainFrame = frame;
     }
 
 }

@@ -61,6 +61,7 @@ public class BookService {
     }
 
     public void updateBook(Integer id, BookDTO bookData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
+        System.out.println("Edição de livro chegou na Service");
         Book existingBook = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ERROR: Book not found with ID: " + id + ", couldn't update data"));
         Optional<Book> bookWithSameIsbn = bookRepository.findByIsbn(bookData.getIsbn());
 
@@ -73,8 +74,12 @@ public class BookService {
         existingBook.setPublishedYear(bookData.getPublishedYear());
         existingBook.setCategory(bookData.getCategory());
         existingBook.setIsbn(bookData.getIsbn());
+        existingBook.setIdBook(id);
+
+        System.out.println("Novo titulo na camada Service: " + existingBook.getTitle());
 
         bookRepository.update(existingBook);
+        System.out.println("Service terminou a edição");
     }
 
     public void deleteBook(Integer id) throws DataAccessException {

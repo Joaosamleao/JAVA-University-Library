@@ -20,8 +20,8 @@ import javax.swing.table.DefaultTableModel;
 import Controller.BookController;
 import Controller.BookCopyController;
 import DTO.BookDTO;
+import DTO.UserDTO;
 import Model.Enum.UserType;
-import Model.User;
 import View.Panels.BookCopyPanels.BookCopyCreateDialog;
 import View.Panels.BookCopyPanels.BookCopyEditDialog;
 
@@ -29,7 +29,7 @@ public class BookDetailsPanel extends JPanel {
     
     private final BookController bookController;
     private final BookCopyController copyController;
-    private final User user;
+    private final UserDTO user;
 
     private BookDTO currentBook;
     private Integer currentBookId;
@@ -46,7 +46,7 @@ public class BookDetailsPanel extends JPanel {
     private JButton editButton;
     private JButton addCopyButton;
 
-    public BookDetailsPanel(BookController bookController, BookCopyController copyController, User user) {
+    public BookDetailsPanel(BookController bookController, BookCopyController copyController, UserDTO user) {
         this.bookController = bookController;
         this.user = user;
         this.copyController = copyController;
@@ -120,17 +120,19 @@ public class BookDetailsPanel extends JPanel {
 
     private void loadCopiesForCurrentBook() {
         try {
+            System.out.print("loadCopies é chamado");
             List<Object[]> copyData = copyController.loadCopiesRequest(currentBookId);
             copiesTableModel.setRowCount(0);
             for (Object[] row : copyData) {
                 copiesTableModel.addRow(row);
             }
         } catch (Exception e) {
-            // Teste // Teste // Teste
+            JOptionPane.showMessageDialog(this, "WARNING WARNING WARNING");
         }
     }
 
     public void loadBookDetails(Integer bookId) {
+        System.out.println("Book ID became: " + bookId);
         this.currentBookId = bookId;
         try {
             currentBook = bookController.requestBookById(bookId);
@@ -145,7 +147,8 @@ public class BookDetailsPanel extends JPanel {
         }
     }
 
-    private void openCreateCopyDialog() {  
+    private void openCreateCopyDialog() {
+        System.out.println("Create Copy is Called");
         Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
         BookCopyCreateDialog createDialog = new BookCopyCreateDialog(parentFrame, true, currentBookId, copyController);
 
