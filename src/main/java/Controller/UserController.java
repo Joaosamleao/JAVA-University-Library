@@ -23,7 +23,7 @@ public class UserController {
             userDTO.setIdUser(user.getIdUser());
             return userDTO;
         } catch (ResourceNotFoundException e) {
-            mainFrame.showWarningMessage("WARNNIG: No users found with registration: " + registration);
+            mainFrame.showWarningMessage("WARNNIG: " + e.getMessage());
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
         }

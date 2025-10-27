@@ -7,6 +7,7 @@ import DTO.CopyDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
+import Exceptions.FormatErrorException;
 import Exceptions.ResourceNotFoundException;
 import Model.BookCopy;
 import Model.Enum.ItemStatus;
@@ -36,7 +37,13 @@ public class BookCopyService {
     public BookCopy createCopy(Integer id, String barcode, String locationCode) throws DataCreationException, BusinessRuleException {
         Optional<BookCopy> bookWithSameBarcode = copyRepository.findByBarCode(barcode);
         if (bookWithSameBarcode.isPresent()) {
-            throw new BusinessRuleException("ERROR: Barcodes must be unique");
+            throw new BusinessRuleException("Barcodes must be unique");
+        }
+
+        try {
+            isValidBarcode(barcode);
+        } catch (FormatErrorException e) {
+            throw new BusinessRuleException(e.getMessage());
         }
 
         BookCopy copy = new BookCopy(id, barcode, locationCode);
@@ -47,7 +54,7 @@ public class BookCopyService {
 
     public BookCopy copyByBarcode(String barcode) throws DataAccessException, ResourceNotFoundException {
         Optional<BookCopy> optionalCopy = copyRepository.findByBarCode(barcode);
-        return optionalCopy.orElseThrow(() -> new ResourceNotFoundException("ERROR: Couldn't find copy with barcode: " + barcode));
+        return optionalCopy.orElseThrow(() -> new ResourceNotFoundException("Couldn't find copy with barcode: " + barcode));
     }
 
     public List<BookCopy> readAllCopies() throws DataAccessException {
@@ -61,15 +68,15 @@ public class BookCopyService {
 
     public BookCopy findCopyById(Integer id) throws DataAccessException {
         Optional<BookCopy> optionalCopy = copyRepository.findById(id);
-        return optionalCopy.orElseThrow(() -> new ResourceNotFoundException("ERROR: Couldn't find copy with id: " + id));
+        return optionalCopy.orElseThrow(() -> new ResourceNotFoundException("Couldn't find copy with id: " + id));
     }
 
     public void updateCopy(Integer id, CopyDTO copyData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
-        BookCopy existingCopy = copyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ERROR: Copy not found with ID: " + id + ", couldn't update data"));
+        BookCopy existingCopy = copyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Copy not found with ID: " + id + ", couldn't update data"));
         Optional<BookCopy> bookWithSameBarcode = copyRepository.findByBarCode(copyData.getBarcode());
 
         if (bookWithSameBarcode.isPresent() && !bookWithSameBarcode.get().getIdCopy().equals(id)) {
-            throw new BusinessRuleException("ERROR: The barcode: " + copyData.getBarcode() + " is already in use by another copy");
+            throw new BusinessRuleException("The barcode: " + copyData.getBarcode() + " is already in use by another copy");
         }
 
         existingCopy.setBarcode(copyData.getBarcode());
@@ -78,9 +85,24 @@ public class BookCopyService {
     }
 
     public void updateCopyStatus(Integer id, ItemStatus status) throws DataAccessException, ResourceNotFoundException {
-        BookCopy existingCopy = copyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ERROR: Copy not found with ID: " + id + ", couldn't update status"));
+        BookCopy existingCopy = copyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Copy not found with ID: " + id + ", couldn't update status"));
         existingCopy.setStatus(status);
         copyRepository.update(existingCopy);
+    }
+
+    private static boolean isValidBarcode(String barcode) throws FormatErrorException {
+        if (barcode == null || barcode.trim().isEmpty()) {
+            throw new FormatErrorException("Barcode format error: value is null or empty");
+        }
+
+        String trimmedCode = barcode.trim();
+        boolean isValid = trimmedCode.matches("\\d+");
+
+        if (!isValid) {
+            throw new FormatErrorException("Barcode can only contain numbers");
+        }
+
+        return isValid;
     }
 
 }

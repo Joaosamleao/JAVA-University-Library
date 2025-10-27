@@ -7,6 +7,7 @@ import DTO.BookDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
+import Exceptions.FormatErrorException;
 import Exceptions.ResourceNotFoundException;
 import Model.Book;
 import Service.BookService;
@@ -25,9 +26,7 @@ public class BookController {
         try {
             service.createBook(bookData);
         } catch (DataCreationException | BusinessRuleException e) {
-            mainFrame.showWarningMessage("WARNING: Couldn't create book: " + e.getMessage());
-        } catch (DataAccessException e) {
-            mainFrame.showErrorMessage("UNPEXCTED ERROR: Couldn't save to database: " + e.getMessage());
+            mainFrame.showWarningMessage("WARNING: " + e.getMessage());
         }
     }
 
@@ -67,9 +66,9 @@ public class BookController {
             System.out.println("Edição de livro chegou no Controller");
             service.updateBook(bookId, bookData);
         } catch (ResourceNotFoundException | BusinessRuleException e) {
-            mainFrame.showWarningMessage("WARNING: Couldn't update book info: " + e.getMessage());
+            mainFrame.showWarningMessage("WARNING: " + e.getMessage());
         } catch (DataAccessException e) {
-            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database: " + e.getMessage());
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access database");
         }
 
     }
@@ -82,6 +81,17 @@ public class BookController {
 
     public void setMainFrame(MainAppFrame frame) {
         this.mainFrame = frame;
+    }
+
+    public Integer checkPublishedYear(String publishedYearString) {
+        try {
+            return BookService.checkPublishedYear(publishedYearString);
+        } catch (FormatErrorException e) {
+            mainFrame.showErrorMessage(e.getMessage());
+        } catch (BusinessRuleException e) {
+            mainFrame.showWarningMessage(e.getMessage());
+        }
+        return null;
     }
 
 }

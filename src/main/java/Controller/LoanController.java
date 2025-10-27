@@ -1,5 +1,6 @@
 package Controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,10 @@ import DTO.LoanDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
+import Exceptions.FormatErrorException;
 import Exceptions.ResourceNotFoundException;
-import Model.Enum.ItemStatus;
 import Model.Loan;
+import Model.Enum.ItemStatus;
 import Service.BookCopyService;
 import Service.LoanService;
 import Service.UserService;
@@ -34,7 +36,7 @@ public class LoanController {
             loanService.createLoan(loan);
             copyService.updateCopyStatus(loanData.getCopyId(), ItemStatus.BORROWED);
         } catch (BusinessRuleException e) {
-            mainFrame.showWarningMessage("WARNING: Copy is already borrowed");
+            mainFrame.showWarningMessage("WARNING: " + e.getMessage());
         } catch (DataCreationException e) {
             mainFrame.showErrorMessage("ERROR: Couldn't create loan");
         }
@@ -48,7 +50,7 @@ public class LoanController {
             for (Loan loan : loans) {
                 Object[] rowData = new Object[] {
                     loan.getIdLoan(),
-                    loan.getUserId(),
+                    userService.findUserById(loan.getUserId()).getRegistration(),
                     copyService.findCopyById(loan.getCopyId()).getBarcode(),
                     loan.getLoanDate(),
                     loan.getExpectedReturnDate()
@@ -78,8 +80,6 @@ public class LoanController {
                 dataForView.add(rowData);
             }
             return dataForView;
-        } catch (ResourceNotFoundException e) {
-            mainFrame.showWarningMessage("WARNING: No users found: " + e.getMessage());
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
         }
@@ -90,12 +90,10 @@ public class LoanController {
         try {
             loanService.updateLoan(id, loanData);
             copyService.updateCopyStatus(loanService.findLoanById(id).getCopyId(), ItemStatus.AVAILABLE);
-        } catch (ResourceNotFoundException e) {
-            mainFrame.showWarningMessage("WARNING: Couldn't find loan with ID: " + id);
+        } catch (ResourceNotFoundException | BusinessRuleException e) {
+            mainFrame.showWarningMessage("WARNING: " + e.getMessage());
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
-        } catch (BusinessRuleException e) {
-            mainFrame.showWarningMessage("WARNING: The return date must not be before the loan");
         }
     }
 
@@ -105,7 +103,7 @@ public class LoanController {
             LoanDTO loanData = new LoanDTO(); loanData.setLoanDate(loan.getLoanDate());
             return loanData;
         } catch (ResourceNotFoundException e) {
-            mainFrame.showWarningMessage("WARNING: Couldn't find loan with ID: " + id);
+            mainFrame.showWarningMessage("WARNING: " + e.getMessage());
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
         }
@@ -114,6 +112,15 @@ public class LoanController {
 
     public void setMainFrame(MainAppFrame frame) {
         this.mainFrame = frame;
+    }
+
+    public LocalDate formatDateString(String dateString) {
+        try {
+            return LoanService.isValidDate(dateString);
+        } catch (FormatErrorException e) {
+            mainFrame.showWarningMessage("ERROR: Couldn't convert " + dateString + " to a Date");
+        }
+        return null;
     }
 
 }

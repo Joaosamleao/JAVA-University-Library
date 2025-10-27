@@ -49,15 +49,15 @@ public class Main {
             BookRepository bookDAO = new BookImpl(connection);
             BookCopyRepository bookCopyDAO = new BookCopyImpl(connection); // Pass connection
             // Make sure LoanImpl constructor accepts Connection and DAOs correctly
-            LoanRepository loanDAO = new LoanImpl(connection); 
-            // FineDAO fineDAO = new FineDAOImpl(connection, loanDAO);
+            LoanRepository loanDAO = new LoanImpl(connection);
+            FineRepository fineDAO = new FineImpl(connection);
 
             // --- 3. Instanciar Services ---
             UserService userService = new UserService(userDAO);
             BookService bookService = new BookService(bookDAO);
             BookCopyService bookCopyService = new BookCopyService(bookCopyDAO); // Pass necessary DAOs
             LoanService loanService = new LoanService(loanDAO); 
-            // FineService fineService = new FineServiceImpl(fineDAO, loanService);
+            FineService fineService = new FineService(fineDAO);
 
             // --- 4. Instanciar Controllers ---
             UserController userController = new UserController(userService);
@@ -65,7 +65,7 @@ public class Main {
             BookCopyController bookCopyController = new BookCopyController(bookCopyService);
             // Ensure LoanController constructor takes required services
             LoanController loanController = new LoanController(loanService, userService, bookCopyService); 
-            // FineController fineController = new FineControllerImpl(fineService);
+            FineController fineController = new FineController(fineService, userService);
 
             // --- 5. Processo de Login ---
             // (Your existing login logic - using UserDTO for now)
@@ -76,7 +76,7 @@ public class Main {
             // --- 6. Iniciar a Janela Principal (Main Frame) ---
             SwingUtilities.invokeLater(() -> {
                 System.out.println("Iniciando a janela principal...");
-                MainAppFrame mainFrame = new MainAppFrame(user2, bookController, bookCopyController, loanController, userController);
+                MainAppFrame mainFrame = new MainAppFrame(user2, bookController, bookCopyController, loanController, userController, fineController);
                 
                 // Connect controllers back to MainFrame
                 ((BookController) bookController).setMainFrame(mainFrame);

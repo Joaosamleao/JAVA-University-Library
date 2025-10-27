@@ -95,16 +95,7 @@ public class BookCreatePanel extends JPanel {
             return;
         }
 
-        int publishedYearInt = 0;
-        try {
-            publishedYearInt = Integer.parseInt(publishedYear);
-            if (publishedYearInt <= 0) {
-                JOptionPane.showMessageDialog(this, "WARNING: Invalid value for published year", "Warning", JOptionPane.WARNING_MESSAGE);
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ERROR: Invalid value for published year", "Error", JOptionPane.WARNING_MESSAGE);
-        }
-
+        Integer publishedYearInt = bookController.checkPublishedYear(publishedYear);
         BookDTO bookDTO = new BookDTO(title, author, publishedYearInt, category, isbn);
         bookController.createBookRequest(bookDTO);
         onCancel();

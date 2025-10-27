@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 import Controller.BookController;
 import Controller.BookCopyController;
+import Controller.FineController;
 import Controller.LoanController;
 import Controller.UserController;
 import DTO.UserDTO;
@@ -39,15 +40,17 @@ public class MainAppFrame extends JFrame {
     private final BookCopyController copyController;
     private final LoanController loanController;
     private final UserController userController;
+    private final FineController fineController;
 
     private final UserDTO loggedUser;
 
-    public MainAppFrame(UserDTO user, BookController bookController, BookCopyController copyController, LoanController loanController, UserController userController) {
+    public MainAppFrame(UserDTO user, BookController bookController, BookCopyController copyController, LoanController loanController, UserController userController, FineController fineController) {
         this.loggedUser = user;
         this.bookController = bookController;
         this.copyController = copyController;
         this.loanController = loanController;
         this.userController = userController;
+        this.fineController = fineController;
         initComponents();
     }
 
@@ -98,11 +101,11 @@ public class MainAppFrame extends JFrame {
         mainPanel.add(loanCreatePanel, "REGISTER_LOAN");
         panelMap.put("REGISTER_LOAN", loanCreatePanel);
 
-        MyFinesPanel myFinesPanel = new MyFinesPanel();
+        MyFinesPanel myFinesPanel = new MyFinesPanel(fineController, loggedUser);
         mainPanel.add(myFinesPanel, "MY_FINES");
         panelMap.put("MY_FINES", myFinesPanel);
 
-        ActiveFinesPanel activeFinesPanel = new ActiveFinesPanel();
+        ActiveFinesPanel activeFinesPanel = new ActiveFinesPanel(fineController);
         mainPanel.add(activeFinesPanel, "ACTIVE_FINES");
         panelMap.put("ACTIVE_FINES", activeFinesPanel);
 

@@ -1,5 +1,14 @@
 package Repository.Interface;
 
-public class FineRepository {
+import java.util.List;
+import java.util.Optional;
+
+import Model.Fine;
+
+public interface FineRepository extends GenericRepository<Fine, Integer> {
     
+    List<Fine> findFineByUserId(Integer id);
+
+    Optional<Fine> findActiveFineByLoanId(Integer id);
+
 }

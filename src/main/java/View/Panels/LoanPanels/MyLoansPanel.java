@@ -25,9 +25,10 @@ public class MyLoansPanel extends JPanel {
         this.loanController = loanController;
         this.user = user;
         initComponents();
+        loadLoans();
     }
 
-    public void loadLoans() {
+    public final void loadLoans() {
         List<Object[]> loanData = loanController.loadLoansByUser(user.getIdUser());
         displayLoans(loanData);
     }
@@ -42,8 +43,14 @@ public class MyLoansPanel extends JPanel {
     }
 
     private void initComponents() {
+        this.setLayout(new BorderLayout(0, 10));
         String[] columns = {"Loan ID", "User Registration", "Barcode", "Loan Date", "Expected Return Date"};
-        tableModel = new DefaultTableModel(columns, 0);
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         table = new JTable(tableModel);
 
         loadButton = new JButton("Reload Loans");

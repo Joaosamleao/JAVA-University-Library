@@ -85,7 +85,7 @@ public class BookImpl implements BookRepository {
     @Override
     public List<Book> findAll() throws DataAccessException {
         List<Book> books = new ArrayList<>();
-        String sql = "SELECT * FROM books ORDER BY title";
+        String sql = "SELECT * FROM books ORDER BY id_book";
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(sql);

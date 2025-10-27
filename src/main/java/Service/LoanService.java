@@ -1,5 +1,8 @@
 package Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +10,7 @@ import DTO.LoanDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
+import Exceptions.FormatErrorException;
 import Exceptions.ResourceNotFoundException;
 import Model.Loan;
 import Repository.Interface.LoanRepository;
@@ -44,22 +48,22 @@ public class LoanService {
 
     public Loan findLoanById(Integer id) throws DataAccessException, ResourceNotFoundException {
         Optional<Loan> optionalLoan = loanRepository.findById(id);
-        return optionalLoan.orElseThrow(() -> new ResourceNotFoundException("ERROR: Loan not found with ID: " + id));
+        return optionalLoan.orElseThrow(() -> new ResourceNotFoundException("Loan not found with ID: " + id));
     }
 
     public List<Loan> readAllLoans() throws DataAccessException {
         return loanRepository.findAll();
     }
 
-    public List<Loan> findLoanByUserId(Integer id) throws DataAccessException, ResourceNotFoundException {
+    public List<Loan> findLoanByUserId(Integer id) throws DataAccessException {
         return loanRepository.findLoanByUserId(id);
     }
 
     public void updateLoan(Integer id, LoanDTO loanData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
         if (loanData.getActualReturnDate().isBefore(loanData.getLoanDate())) {
-            throw new BusinessRuleException("WARNING: Invalid value for return date");
+            throw new BusinessRuleException("Invalid value for return date");
         }
-        Loan existingLoan = loanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(("ERROR: Loan not found with ID: " + id)));
+        Loan existingLoan = loanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(("Loan not found with ID: " + id)));
 
         existingLoan.setActualReturnDate(loanData.getActualReturnDate());
         loanRepository.update(existingLoan);
@@ -67,6 +71,22 @@ public class LoanService {
 
     public void deleteLoan(Integer id) throws DataAccessException {
         loanRepository.delete(id);
+    }
+
+    public static LocalDate isValidDate(String dateString) throws FormatErrorException {
+        if (dateString.isEmpty()) {
+            throw new FormatErrorException("Invalid value for return date");
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate convertedDate;
+
+        try {
+            convertedDate = LocalDate.parse(dateString, formatter);
+            return convertedDate;
+        } catch (DateTimeParseException e) {
+            throw new FormatErrorException("Couldn't convert: " + dateString + " to a Date");
+        }
     }
 
 }

@@ -69,7 +69,7 @@ public class LoanImpl implements LoanRepository {
     @Override
     public List<Loan> findLoanByUserId(Integer id) throws DataAccessException {
         List<Loan> loans = new ArrayList<>();
-        String sql = "SEELCT * FROM loans WHERE id_user = ?";
+        String sql = "SELECT * FROM loans WHERE id_user = ? ORDER BY id_loan";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -110,7 +110,7 @@ public class LoanImpl implements LoanRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("WARNING: Couldn't find active loan with copy ID: " + id, e);
+            throw new DataAccessException("ERROR: Couldn't find active loan with copy ID: " + id, e);
         }
         return Optional.empty();
     }
@@ -118,7 +118,7 @@ public class LoanImpl implements LoanRepository {
     @Override
     public List<Loan> findAll() throws DataAccessException {
         List<Loan> loans = new ArrayList<>();
-        String sql = "SELECT * FROM loans WHERE actual_return_date IS NULL";
+        String sql = "SELECT * FROM loans WHERE actual_return_date IS NULL ORDER BY id_loan";
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(sql);

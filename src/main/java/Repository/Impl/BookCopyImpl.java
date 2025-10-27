@@ -82,7 +82,7 @@ public class BookCopyImpl implements BookCopyRepository {
     @Override
     public List<BookCopy> findAll() throws DataAccessException {
         List<BookCopy> copies = new ArrayList<>();
-        String sql = "SELECT * FROM copies";
+        String sql = "SELECT * FROM copies ORDER BY id_copy";
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -98,7 +98,7 @@ public class BookCopyImpl implements BookCopyRepository {
     @Override
     public List<BookCopy> findByBook(Integer id) throws DataAccessException {
         List<BookCopy> copies = new ArrayList<>();
-        String sql = "SELECT * FROM copies WHERE id_book = ?";
+        String sql = "SELECT * FROM copies WHERE id_book = ? ORDER BY id_copy";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {

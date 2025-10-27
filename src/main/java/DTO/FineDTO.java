@@ -1,8 +1,8 @@
-package Model;
+package DTO;
 
 import java.time.LocalDate;
 
-public class Fine {
+public class FineDTO {
     
     private Integer idFine;
     private Integer loanId;
@@ -13,11 +13,11 @@ public class Fine {
     private LocalDate issueDate;
     private LocalDate paymentDate;
 
-    public Fine() {
+    public FineDTO() {
 
     }
 
-    public Fine(Integer loanId, Integer userId, double amount) {
+    public FineDTO(Integer loanId, Integer userId, double amount) {
         this.loanId = loanId;
         this.userId = userId;
         this.amount = amount;

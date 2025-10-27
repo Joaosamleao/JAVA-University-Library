@@ -6,8 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -80,21 +78,14 @@ public class LoanDetailsDialog extends JDialog {
             return;
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate convertedDate;
+        LocalDate convertedDate = loanController.formatDateString(dateString);
+        LoanDTO loanData = new LoanDTO();
+        loanData.setLoanDate(loanController.findLoanById(loanId).getLoanDate());
+        loanData.setActualReturnDate(convertedDate);
+        loanController.completeLoan(loanId, loanData);
 
-        try {
-            convertedDate = LocalDate.parse(dateString, formatter);
-            LoanDTO loanData = new LoanDTO();
-            loanData.setLoanDate(loanController.findLoanById(loanId).getLoanDate());
-            loanData.setActualReturnDate(convertedDate);
-            loanController.completeLoan(loanId, loanData);
-
-            this.isSaved = true;
-            this.dispose();
-        } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "ERROR: Couldn't convert " + dateString + " to a Date");
-        }
+        this.isSaved = true;
+        this.dispose();
     }
 
     private void onCancel() {

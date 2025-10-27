@@ -51,7 +51,7 @@ public class BookCopyController {
             return dataForView;
         } catch (DataAccessException e) {
             System.out.print("Exception no Load copies");
-            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access database");
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database");
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class BookCopyController {
         } catch (ResourceNotFoundException | BusinessRuleException e) {
             mainFrame.showWarningMessage("WARNING: Couldn't update copy info: " + e.getMessage());
         } catch (DataAccessException e) {
-            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database: " + e.getMessage());
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database");
         }
     }
 
