@@ -68,7 +68,7 @@ public class FineImpl implements FineRepository {
     @Override
     public List<Fine> findFineByUserId(Integer id) {
         List<Fine> fines = new ArrayList<>();
-        String sql = "SELECT * FROM fines WHERE id_user = ? ORDER BY id_fine";
+        String sql = "SELECT * FROM fines WHERE id_user = ? AND payment_date IS NULL ORDER BY id_fine";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1 , id);
             try (ResultSet rs = ps.executeQuery()) {

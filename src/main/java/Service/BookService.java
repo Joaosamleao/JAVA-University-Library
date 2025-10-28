@@ -38,7 +38,7 @@ public class BookService {
 
     public Book createBook(BookDTO bookData) throws DataCreationException, BusinessRuleException {
         Optional<Book> bookWithSameIsbn = bookRepository.findByIsbn(bookData.getIsbn());
-        if (bookWithSameIsbn.isPresent() && !bookWithSameIsbn.get().getIsbn().equals(bookData.getIsbn())) {
+        if (bookWithSameIsbn.isPresent()) {
             throw new BusinessRuleException("ISBN code must be unique");
         }
 
@@ -90,8 +90,12 @@ public class BookService {
         System.out.println("Service terminou a edição");
     }
 
-    public void deleteBook(Integer id) throws DataAccessException {
-        bookRepository.delete(id);
+    public void deleteBook(Integer id) throws DataAccessException, ResourceNotFoundException {
+        if (bookRepository.findById(id).isPresent()) {
+            bookRepository.delete(id);
+        } else {
+            throw new ResourceNotFoundException("Book not found with ID: " + id);
+        }
     }
 
     public static int checkPublishedYear(String publishedYear) throws FormatErrorException, BusinessRuleException {
@@ -108,21 +112,21 @@ public class BookService {
         }
     }
 
-    private static boolean isValidIsbnFormat(String isbn) throws FormatErrorException {
+    private static void isValidIsbnFormat(String isbn) throws FormatErrorException {
         if (isbn == null || isbn.trim().isEmpty()) {
-            return false;
+            throw new FormatErrorException("ISBN cannot be empty");
         }
 
         String cleanedIsbn = isbn.replace("-", "").replace(" ", "");
 
-        return switch (cleanedIsbn.length()) {
+        switch (cleanedIsbn.length()) {
             case 10 -> isValidIsbn10(cleanedIsbn);
             case 13 -> isValidIsbn13(cleanedIsbn);
-            default -> false;
-        };
+            default -> throw new FormatErrorException("ISBN must be 10 or 13 digits");
+        }
     }
 
-    private static boolean isValidIsbn10(String isbn10) throws FormatErrorException {
+    private static void isValidIsbn10(String isbn10) throws FormatErrorException {
         if (!isbn10.substring(0, 9).matches("\\d{9}") || !isbn10.substring(9).matches("[\\dX]")) {
             throw new FormatErrorException("ISBN-10 format error: " + isbn10);
         } 
@@ -147,10 +151,9 @@ public class BookService {
             throw new FormatErrorException("ISBN-10 format error: " + isbn10 + " expected: " + expectedCheckDigit + " got: " + actualCheckDigit);
 
         }
-        return isValid;
     }
 
-    private static boolean isValidIsbn13(String isbn13) throws BusinessRuleException {
+    private static void isValidIsbn13(String isbn13) throws BusinessRuleException {
         if (!isbn13.matches("\\d{13}") || (!isbn13.startsWith("978")) && !isbn13.startsWith("979")) {
             throw new FormatErrorException("ISBN-13 format error: " + isbn13);
         }
@@ -170,7 +173,6 @@ public class BookService {
         if (!isValid) {
             throw new FormatErrorException("ISBN-13 format error: " + isbn13 + " expected: " + expectedCheckDigit + " got: " + actualCheckDigit);
         }
-        return isValid;
     }
 
 }

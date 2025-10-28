@@ -90,6 +90,15 @@ public class BookCopyService {
         copyRepository.update(existingCopy);
     }
 
+    public void deleteCopy(Integer id) throws DataAccessException, ResourceNotFoundException {
+        if (copyRepository.findById(id).isPresent()) {
+            copyRepository.delete(id);
+        } else {
+            throw new ResourceNotFoundException("Copy not found with ID: " + id);
+        }
+        
+    }
+
     private static boolean isValidBarcode(String barcode) throws FormatErrorException {
         if (barcode == null || barcode.trim().isEmpty()) {
             throw new FormatErrorException("Barcode format error: value is null or empty");

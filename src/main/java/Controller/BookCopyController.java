@@ -56,13 +56,16 @@ public class BookCopyController {
         return null;
     }
 
-    public void requestCopyEdit(Integer copyId, CopyDTO copyData) {
+    public boolean requestCopyEdit(Integer copyId, CopyDTO copyData) {
         try {
             service.updateCopy(copyId, copyData);
+            return true;
         } catch (ResourceNotFoundException | BusinessRuleException e) {
             mainFrame.showWarningMessage("WARNING: Couldn't update copy info: " + e.getMessage());
+            return false;
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't save to database");
+            return false;
         }
     }
 
@@ -77,6 +80,17 @@ public class BookCopyController {
         CopyDTO copyDTO = new CopyDTO();
         copyDTO.setCopyId(copy.getIdCopy());
         return copyDTO;
+    }
+
+    public void requestDelete(Integer copyId) {
+        try {
+            service.deleteCopy(copyId);
+        } catch (ResourceNotFoundException e) {
+            mainFrame.showWarningMessage("WARNING: " + e.getMessage());
+        } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: " + e.getMessage());
+        }
+        
     }
 
     public void setMainFrame(MainAppFrame frame) {

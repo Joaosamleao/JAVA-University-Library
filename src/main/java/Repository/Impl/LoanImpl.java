@@ -70,7 +70,7 @@ public class LoanImpl implements LoanRepository {
     @Override
     public List<Loan> findLoanByUserId(Integer id) throws DataAccessException {
         List<Loan> loans = new ArrayList<>();
-        String sql = "SELECT * FROM loans WHERE id_user = ? ORDER BY id_loan";
+        String sql = "SELECT * FROM loans WHERE id_user = ? AND actual_return_date IS NULL ORDER BY id_loan";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {

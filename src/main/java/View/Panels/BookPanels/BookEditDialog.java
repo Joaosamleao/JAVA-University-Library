@@ -29,8 +29,10 @@ public class BookEditDialog extends JDialog {
     private JTextField isbnField;
     private JButton saveButton;
     private JButton cancelButton;
+    private JButton deleteButton;
 
     private boolean isSaved = false;
+    private boolean isDeleted = false;
 
     public BookEditDialog(Frame parent, boolean modal, Integer bookId, BookController bookController) {
         super(parent, modal);
@@ -77,10 +79,12 @@ public class BookEditDialog extends JDialog {
         
         saveButton = new JButton("Save");
         cancelButton = new JButton("Cancel");
+        deleteButton = new JButton("Delete");
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
+        buttonPanel.add(deleteButton);
 
         gbc.gridx = 0; gbc.gridy = 5;
         gbc.gridwidth = 2;
@@ -90,7 +94,8 @@ public class BookEditDialog extends JDialog {
 
         saveButton.addActionListener(e -> onSave());
         cancelButton.addActionListener(e -> onCancel());
-        
+        deleteButton.addActionListener(e -> onDelete());
+
         pack();
     }
 
@@ -120,14 +125,29 @@ public class BookEditDialog extends JDialog {
 
         BookDTO bookData = new BookDTO(title, author, publishedYearInt, category, isbn);
         System.out.print("New Book Data Title: " + bookData.getTitle());
-        bookController.requestBookEdit(bookId, bookData);
-        this.isSaved = true;
-        this.dispose();
+        boolean success = bookController.requestBookEdit(bookId, bookData);
+
+        if (success) {
+            this.isSaved = true;
+            this.dispose();
+        } else {
+            this.isSaved = false;
+        }
     }
 
     private void onCancel() {
         this.isSaved = false;
         this.dispose();
+    }
+
+    private void onDelete() {
+        bookController.requestDelete(bookId);
+        this.isDeleted = true;
+        this.dispose();
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
     public boolean isSaved() {

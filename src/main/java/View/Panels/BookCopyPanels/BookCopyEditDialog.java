@@ -25,6 +25,7 @@ public class BookCopyEditDialog extends JDialog {
     private JTextField locationCodeField;
     private JButton saveButton;
     private JButton cancelButton;
+    private JButton deleteButton;
 
     private boolean isSaved = false;
 
@@ -58,10 +59,12 @@ public class BookCopyEditDialog extends JDialog {
 
         saveButton = new JButton("Save");
         cancelButton = new JButton("Cancel");
+        deleteButton = new JButton("Delete");
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
+        buttonPanel.add(deleteButton);
 
         gbc.gridx = 0; gbc.gridy = 2;
         gbc.gridwidth = 2;
@@ -71,6 +74,7 @@ public class BookCopyEditDialog extends JDialog {
 
         saveButton.addActionListener(e -> onSave());
         cancelButton.addActionListener(e -> onCancel());
+        deleteButton.addActionListener(e -> onDelete());
 
         pack();
     }
@@ -91,14 +95,24 @@ public class BookCopyEditDialog extends JDialog {
         }
 
         CopyDTO copyData = new CopyDTO(barcode, locationCode);
-        copyController.requestCopyEdit(copyId, copyData);
-        this.isSaved = true;
-        this.dispose();
+        boolean success = copyController.requestCopyEdit(copyId, copyData);
+
+        if (success) {
+            this.isSaved = true;
+            this.dispose();
+        } else {
+            this.isSaved = false;
+        }
+        
     }
 
     private void onCancel() {
         this.isSaved = false;
         this.dispose();
+    }
+
+    private void onDelete() {
+        copyController.requestDelete(copyId);
     }
 
     public boolean isSaved() {

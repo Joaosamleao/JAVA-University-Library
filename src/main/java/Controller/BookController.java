@@ -22,11 +22,13 @@ public class BookController {
         this.service = service;
     }
 
-    public void createBookRequest(BookDTO bookData) {
+    public boolean createBookRequest(BookDTO bookData) {
         try {
             service.createBook(bookData);
+            return true;
         } catch (DataCreationException | BusinessRuleException e) {
             mainFrame.showWarningMessage("WARNING: " + e.getMessage());
+            return false;
         }
     }
 
@@ -61,14 +63,17 @@ public class BookController {
         }
     }
 
-    public void requestBookEdit(Integer bookId, BookDTO bookData) {
+    public boolean requestBookEdit(Integer bookId, BookDTO bookData) {
         try {
             System.out.println("Edição de livro chegou no Controller");
             service.updateBook(bookId, bookData);
+            return true;
         } catch (ResourceNotFoundException | BusinessRuleException e) {
             mainFrame.showWarningMessage("WARNING: " + e.getMessage());
+            return false;
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access database");
+            return false;
         }
 
     }
@@ -77,6 +82,16 @@ public class BookController {
         Book book = service.findBookById(bookId);
         BookDTO bookDTO = new BookDTO(book.getTitle(), book.getAuthor(), book.getPublishedYear(), book.getCategory(), book.getIsbn());
         return bookDTO;
+    }
+
+    public void requestDelete(Integer bookId) {
+        try {
+            service.deleteBook(bookId);
+        } catch (ResourceNotFoundException e) {
+            mainFrame.showWarningMessage("WARNING: " + e.getMessage());
+        } catch (DataAccessException e) {
+            mainFrame.showErrorMessage("UNEXPECTED ERROR: " + e.getMessage());
+        }
     }
 
     public void setMainFrame(MainAppFrame frame) {

@@ -97,7 +97,13 @@ public class BookCreatePanel extends JPanel {
 
         Integer publishedYearInt = bookController.checkPublishedYear(publishedYear);
         BookDTO bookDTO = new BookDTO(title, author, publishedYearInt, category, isbn);
-        bookController.createBookRequest(bookDTO);
+
+        boolean success = bookController.createBookRequest(bookDTO);
+
+        if (success) {
+            onCancel();
+        }
+
         onCancel();
     }
 
