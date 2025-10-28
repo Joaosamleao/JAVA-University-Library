@@ -24,11 +24,12 @@ public class FineImpl implements FineRepository {
 
     @Override
     public Fine create(Fine fine) throws DataCreationException {
-        String sql = "INSERT INTO fines (id_loan, amount, issue_date) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO fines (id_loan, id_user, amount, issue_date) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, fine.getLoan());
-            ps.setDouble(2, fine.getAmount());
-            ps.setDate(3, java.sql.Date.valueOf(fine.getIssueDate()));
+            ps.setInt(2, fine.getIdUser());
+            ps.setBigDecimal(3, fine.getAmount());
+            ps.setDate(4, java.sql.Date.valueOf(fine.getIssueDate()));
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
@@ -100,7 +101,7 @@ public class FineImpl implements FineRepository {
     @Override
     public List<Fine> findAll() throws DataAccessException {
         List<Fine> fines = new ArrayList<>();
-        String sql = "SELECT * FROM fines ORDER BY id_fine";
+        String sql = "SELECT * FROM fines WHERE payment_date IS NULL ORDER BY id_fine";
         try {
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery(sql);
@@ -146,7 +147,7 @@ public class FineImpl implements FineRepository {
         fine.setIdFine(rs.getInt("id_fine"));
         fine.setIdLoan(rs.getInt("id_loan"));
         fine.setIdUser(rs.getInt("id_user"));
-        fine.setAmount(rs.getDouble("amount"));
+        fine.setAmount(rs.getBigDecimal("amount"));
         fine.setIssueDate(rs.getDate("issue_date").toLocalDate());
         return fine;
     }

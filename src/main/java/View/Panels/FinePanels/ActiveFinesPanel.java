@@ -1,14 +1,17 @@
 package View.Panels.FinePanels;
 
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import Controller.FineController;
@@ -42,7 +45,7 @@ public class ActiveFinesPanel extends JPanel {
 
     private void initComponents() {
         this.setLayout(new BorderLayout(0, 10));
-        String[] columns = {"Fine ID", "Loan ID", "User Registration", "Issue Date"};
+        String[] columns = {"Fine ID", "Loan ID", "User Registration", "Amount", "Issue Date"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -72,7 +75,14 @@ public class ActiveFinesPanel extends JPanel {
     }
 
     public void openFineDetailsDialog(Integer id) {
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        FineDetailsDialog detailsDialog = new FineDetailsDialog(parentFrame, true, id, controller);
 
+        detailsDialog.setVisible(true);
+        if (detailsDialog.isSaved()) {
+            loadFines();
+            JOptionPane.showMessageDialog(this, "Succesfully closed fine", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
 }

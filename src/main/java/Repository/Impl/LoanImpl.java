@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -166,6 +167,12 @@ public class LoanImpl implements LoanRepository {
         loan.setCopyId(rs.getInt("id_copy"));
         loan.setLoanDate(rs.getDate("loan_date").toLocalDate());
         loan.setExpectedReturnDate(rs.getDate("expected_return_date").toLocalDate());
+
+        Date sqlActualDate = rs.getDate("actual_return_date");
+
+        if (sqlActualDate != null) {
+            loan.setActualReturnDate(rs.getDate("actual_return_date").toLocalDate());
+        }
         return loan;
     }
 

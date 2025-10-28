@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
+import Model.Enum.UserType;
 import Model.User;
 import Repository.Interface.UserRepository;
 
@@ -135,6 +136,7 @@ public class UserImpl implements UserRepository {
         user.setName(rs.getString("name"));
         user.setRegistration("registration");
         user.setEmail(rs.getString("email"));
+        user.setUserType(UserType.valueOf(rs.getString("user_type").toUpperCase()));
         user.setPassword(rs.getString("password"));
         return user;
     }

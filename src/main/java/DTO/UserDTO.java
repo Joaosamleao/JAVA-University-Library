@@ -17,12 +17,11 @@ public class UserDTO {
 
     }
 
-    public UserDTO(String name, String registration, String email, String password,UserType userType) {
+    public UserDTO(String name, String registration, String email, UserType userType) {
         this.name = name;
         this.registration = registration;
         this.email = email;
         this.userType = userType;
-        this.password = password;
     }
 
     // Getters

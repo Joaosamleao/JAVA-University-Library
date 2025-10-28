@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Controller.LoanController;
-import DTO.LoanDTO;
 
 public class LoanDetailsDialog extends JDialog {
     
@@ -79,13 +78,19 @@ public class LoanDetailsDialog extends JDialog {
         }
 
         LocalDate convertedDate = loanController.formatDateString(dateString);
-        LoanDTO loanData = new LoanDTO();
-        loanData.setLoanDate(loanController.findLoanById(loanId).getLoanDate());
-        loanData.setActualReturnDate(convertedDate);
-        loanController.completeLoan(loanId, loanData);
-
-        this.isSaved = true;
-        this.dispose();
+        if (convertedDate == null) {
+            this.isSaved = false;
+            return;
+        } 
+        boolean success = loanController.completeLoan(loanId, convertedDate);
+        
+        if (success) {
+            this.isSaved = true;
+            this.dispose();
+        } else {
+            this.isSaved = false;
+        }
+        
     }
 
     private void onCancel() {

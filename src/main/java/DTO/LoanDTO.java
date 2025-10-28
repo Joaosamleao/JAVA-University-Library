@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 public class LoanDTO {
 
+    private Integer loanId;
+
     private Integer userId;
     private Integer copyId;
     
@@ -28,6 +30,7 @@ public class LoanDTO {
     public LocalDate getLoanDate() { return loanDate; }
     public LocalDate getExpectedReturnDate() { return expectedReturnDate; }
     public LocalDate getActualReturnDate() { return actualReturnDate; }
+    public Integer getLoanId() { return loanId; }
 
     // Setters
     public void setUserId(Integer userId) { this.userId = userId; }
@@ -35,5 +38,6 @@ public class LoanDTO {
     public void setLoanDate(LocalDate loanDate) { this.loanDate = loanDate; }
     public void setExpectedReturnDate(LocalDate expectedDate) { this.expectedReturnDate = expectedDate; }
     public void setActualReturnDate(LocalDate actualReturnDate) { this.actualReturnDate = actualReturnDate; }
+    public void setLoanId(Integer loanId) { this.loanId = loanId; }
 
 }

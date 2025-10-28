@@ -33,6 +33,7 @@ public class FineDetailsDialog extends JDialog {
         this.fineId = fineId;
         this.fineController = fineController;
         initComponents();
+        loadFields();
     }
 
     private void initComponents() {
@@ -46,7 +47,7 @@ public class FineDetailsDialog extends JDialog {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.gridx = 0; gbc.gridy = 0; add(new JLabel("Return Date:"), gbc);
+        gbc.gridx = 0; gbc.gridy = 0; add(new JLabel("Payment Date:"), gbc);
         gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 1.0;
         paymentDateField = new JTextField(15); add(paymentDateField, gbc);
         
@@ -69,6 +70,10 @@ public class FineDetailsDialog extends JDialog {
         pack();
     }
 
+    private void loadFields() {
+        paymentDateField.setText(LocalDate.now().toString());
+    }
+
     private void onSave() {
         String dateString = paymentDateField.getText().trim();
 
@@ -78,12 +83,23 @@ public class FineDetailsDialog extends JDialog {
         }
 
         LocalDate convertedDate = fineController.formatDateString(dateString);
+
+        if (convertedDate == null) {
+            this.isSaved = false;
+            return;
+        }
+
         FineDTO fineData = new FineDTO();
         fineData.setPaymentDate(convertedDate);
-        fineController.completeFine(fineId, fineData);
 
-        this.isSaved = true;
-        this.dispose();
+        boolean success = fineController.completeFine(fineId, fineData);
+
+        if (success) {
+            this.isSaved = true;
+            this.dispose();
+        } else {
+            this.isSaved = false;
+        }
     }
 
     private void onCancel() {

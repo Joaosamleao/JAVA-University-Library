@@ -6,7 +6,6 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
-import DTO.LoanDTO;
 import Exceptions.BusinessRuleException;
 import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
@@ -59,13 +58,12 @@ public class LoanService {
         return loanRepository.findLoanByUserId(id);
     }
 
-    public void updateLoan(Integer id, LoanDTO loanData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
-        if (loanData.getActualReturnDate().isBefore(loanData.getLoanDate())) {
+    public void updateLoan(Loan existingLoan, LocalDate actualDate) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
+        if (actualDate.isBefore(existingLoan.getLoanDate())) {
             throw new BusinessRuleException("Invalid value for return date");
         }
-        Loan existingLoan = loanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(("Loan not found with ID: " + id)));
 
-        existingLoan.setActualReturnDate(loanData.getActualReturnDate());
+        existingLoan.setActualReturnDate(actualDate);
         loanRepository.update(existingLoan);
     }
 

@@ -46,6 +46,7 @@ public class FineController {
 
             for (Fine fine : fines) {
                 Object[] rowData = new Object[] {
+                    fine.getIdFine(),
                     fine.getLoan(),
                     userService.findUserById(fine.getIdUser()).getRegistration(),
                     fine.getAmount(),
@@ -67,6 +68,7 @@ public class FineController {
 
             for (Fine fine : fines) {
                 Object[] rowData = new Object[] {
+                    fine.getIdFine(),
                     fine.getLoan(),
                     userService.findUserById(fine.getIdUser()).getRegistration(),
                     fine.getAmount(),
@@ -81,13 +83,16 @@ public class FineController {
         return null;
     }
 
-    public void completeFine(Integer id, FineDTO fineData) {
+    public boolean completeFine(Integer id, FineDTO fineData) {
         try {
             service.updateFine(id, fineData);
+            return true;
         } catch (ResourceNotFoundException | BusinessRuleException e) {
             mainFrame.showWarningMessage("WARNING: " + e.getMessage());
+            return false;
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
+            return false;
         }
     }
 
@@ -98,6 +103,10 @@ public class FineController {
             mainFrame.showWarningMessage("ERROR: Couldn't convert " + dateString + " to a Date");
         }
         return null;
+    }
+
+    public void setMainFrame(MainAppFrame mainFrame) {
+        this.mainFrame = mainFrame;
     }
 
 }

@@ -44,13 +44,16 @@ public class FineService {
     }
 
     public void updateFine(Integer id, FineDTO fineData) throws DataAccessException, ResourceNotFoundException, BusinessRuleException {
-        if (fineData.getPaymentDate().isBefore(fineData.getIssueDate())) {
+        Fine existingFine = fineRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Fine not found with ID: " + id));
+        if (fineData.getPaymentDate().isBefore(existingFine.getIssueDate())) {
             throw new BusinessRuleException("WARNING: Invalid value for payment date");
         }
-        Fine existingFine = fineRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ERROR: Fine not found with ID: " + id));
-
         existingFine.setPaymentDate(fineData.getPaymentDate());
         fineRepository.update(existingFine);
+    }
+
+    public boolean isCreateFine(LocalDate expectedDate, LocalDate actualReturn) {
+        return actualReturn.isAfter(expectedDate);
     }
 
     public void deleteFine(Integer id) throws DataAccessException {

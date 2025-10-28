@@ -168,12 +168,14 @@ public class MainAppFrame extends JFrame {
         if (loggedUser.getUserType() == UserType.CLERK) {
             JMenuItem activeFines = new JMenuItem("Active Fines");
             activeFines.addActionListener(e -> switchToView("ACTIVE_FINES", null));
+            fineMenu.add(activeFines);
             addedFinesMenu = true;
         }
 
         if (loggedUser.getUserType() == UserType.STUDENT) {
             JMenuItem myFines = new JMenuItem("My Fines");
             myFines.addActionListener(e -> switchToView("MY_FINES", null));
+            fineMenu.add(myFines);
             addedFinesMenu = true;
         }
 
@@ -209,6 +211,18 @@ public class MainAppFrame extends JFrame {
             case "MY_LOANS" -> {
                 if (panel instanceof MyLoansPanel myLoansPanel) {
                     myLoansPanel.loadLoans();
+                }
+            }
+
+            case "ACTIVE_FINES" -> {
+                if (panel instanceof ActiveFinesPanel activeFinesPanel) {
+                    activeFinesPanel.loadFines();
+                }
+            }
+
+            case "MY_FINES" -> {
+                if (panel instanceof MyFinesPanel myFinesPanel) {
+                    myFinesPanel.loadFines();
                 }
             }
         }

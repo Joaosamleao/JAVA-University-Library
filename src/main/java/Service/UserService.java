@@ -4,6 +4,10 @@ package Service;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import Exceptions.AuthenticationException;
 import Exceptions.DataAccessException;
 import Exceptions.ResourceNotFoundException;
 import Model.User;
@@ -24,9 +28,11 @@ import Repository.Interface.UserRepository;
 public class UserService {
     
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public User findUserById(Integer id) throws DataAccessException, ResourceNotFoundException {
@@ -37,6 +43,28 @@ public class UserService {
     public User findUserByRegistration(String registration) throws DataAccessException, ResourceNotFoundException {
         Optional<User> optionalUser = userRepository.findUserByRegistration(registration);
         return optionalUser.orElseThrow(() -> new ResourceNotFoundException("ERROR: User not found with registration: " + registration));
+    }
+
+    public User authenticateLogin(String registration, String password) throws AuthenticationException, DataAccessException {
+        System.out.println("Chamada de autenticação chegou na Service");
+        Optional<User> optionalUser = userRepository.findUserByRegistration(registration);
+        User user = optionalUser.orElseThrow(() -> new AuthenticationException("Invalid Credentials"));
+        String storedHash = user.getPassword();
+        System.out.println("Service achou o usuário com ID: " + user.getIdUser());
+
+        if (storedHash == null || storedHash.isEmpty()) {
+            throw new AuthenticationException("Authentication failed [HASH_MISSING]");
+        }
+        System.out.println("Senha na Service 1: " + password + "Tamanho: " + password.length() + " Hash: " + storedHash + "Tamanho: " + storedHash.length());
+        boolean passwordsMatch = passwordEncoder.matches(password, storedHash);
+        System.out.println(passwordsMatch);
+
+        if (passwordsMatch) {
+            return user;
+        } else {
+            throw new AuthenticationException("Invalid credentials");
+        }
+        
     }
 
 }

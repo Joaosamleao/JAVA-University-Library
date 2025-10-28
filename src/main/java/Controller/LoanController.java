@@ -1,6 +1,8 @@
 package Controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +12,11 @@ import Exceptions.DataAccessException;
 import Exceptions.DataCreationException;
 import Exceptions.FormatErrorException;
 import Exceptions.ResourceNotFoundException;
-import Model.Loan;
 import Model.Enum.ItemStatus;
+import Model.Fine;
+import Model.Loan;
 import Service.BookCopyService;
+import Service.FineService;
 import Service.LoanService;
 import Service.UserService;
 import View.MainAppFrame;
@@ -22,12 +26,14 @@ public class LoanController {
     private final LoanService loanService;
     private final UserService userService;
     private final BookCopyService copyService;
+    private final FineService fineService;
     private MainAppFrame mainFrame;
 
-    public LoanController(LoanService loanService, UserService userService, BookCopyService copyService) {
+    public LoanController(LoanService loanService, UserService userService, BookCopyService copyService, FineService fineService) {
         this.loanService = loanService;
         this.userService = userService;
         this.copyService = copyService;
+        this.fineService = fineService;
     }
 
     public void createLoanRequest(LoanDTO loanData) {
@@ -86,14 +92,29 @@ public class LoanController {
         return null;
     }
 
-    public void completeLoan(Integer id, LoanDTO loanData) {
+    public boolean completeLoan(Integer id, LocalDate actualDate) {
         try {
-            loanService.updateLoan(id, loanData);
-            copyService.updateCopyStatus(loanService.findLoanById(id).getCopyId(), ItemStatus.AVAILABLE);
+            Loan originalLoan = loanService.findLoanById(id);
+            loanService.updateLoan(originalLoan, actualDate);
+            copyService.updateCopyStatus(originalLoan.getCopyId(), ItemStatus.AVAILABLE);
+
+            long daysOverdue = ChronoUnit.DAYS.between(originalLoan.getExpectedReturnDate(), originalLoan.getActualReturnDate());
+
+            if (daysOverdue > 0) {
+                BigDecimal ratePerDay = new BigDecimal("3.00");
+                BigDecimal totalAmount = ratePerDay.multiply(new BigDecimal(daysOverdue));
+
+                Fine fineData = new Fine(id, originalLoan.getUserId(), totalAmount);
+                fineService.createFine(fineData);
+            }
+
+            return true;
         } catch (ResourceNotFoundException | BusinessRuleException e) {
             mainFrame.showWarningMessage("WARNING: " + e.getMessage());
+            return false;
         } catch (DataAccessException e) {
             mainFrame.showErrorMessage("UNEXPECTED ERROR: Couldn't access the database");
+            return false;
         }
     }
 
@@ -101,6 +122,10 @@ public class LoanController {
         try {
             Loan loan = loanService.findLoanById(id);
             LoanDTO loanData = new LoanDTO(); loanData.setLoanDate(loan.getLoanDate());
+            loanData.setExpectedReturnDate(loan.getExpectedReturnDate());
+            loanData.setUserId(loan.getUserId());
+            loanData.setCopyId(loan.getCopyId());
+            System.out.println("Achado empréstimo com ID: " + loanData.getLoanId() + " e Actual Return Date: " + loanData.getActualReturnDate());
             return loanData;
         } catch (ResourceNotFoundException e) {
             mainFrame.showWarningMessage("WARNING: " + e.getMessage());
